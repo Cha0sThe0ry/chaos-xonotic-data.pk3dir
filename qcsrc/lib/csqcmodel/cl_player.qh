@@ -40,3 +40,7 @@ float CSQCPlayer_PreUpdate(entity this);
 float CSQCPlayer_PostUpdate(entity this);
 float CSQCPlayer_IsLocalPlayer(entity this);
 vector CSQCModel_ApplyStairSmoothing(entity this, bool isonground, vector v);
+
+// bones_was_here: prediction of timed physics features,
+// including skimming and CPM double jumping, requires reading this
+float csqcplayer_moveframe;

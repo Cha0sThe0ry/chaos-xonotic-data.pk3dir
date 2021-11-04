@@ -71,8 +71,6 @@ const int WATERLEVEL_SUBMERGED = 3;
 
 void set_movetype(entity this, int mt);
 
-.float pm_time;
-
 .float move_movetype;
 .float move_time;
 //.vector move_origin;
