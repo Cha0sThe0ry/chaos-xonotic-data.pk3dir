@@ -19,7 +19,7 @@ MUTATOR_HOOKFUNCTION(doublejump, PlayerJump)
 {
     entity player = M_ARGV(0, entity);
 
-	if (PHYS_DOUBLEJUMP(player))
+	if (PHYS_DOUBLEJUMP(player) == 1 || PHYS_DOUBLEJUMP(player) == 2)
 	{
 		tracebox(player.origin + '0 0 0.01', player.mins, player.maxs, player.origin - '0 0 0.01', MOVE_NORMAL, player);
 		if (trace_fraction < 1 && trace_plane_normal_z > 0.7)

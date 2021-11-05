@@ -256,6 +256,10 @@ int _Movetype_FlyMove(entity this, float dt, bool applygravity, bool applystepno
 				break;
 			}
 			float trace2_fraction = trace_fraction;
+			// experiment, to avoid the need for the tracebox in common/mutators/mutator/doublejump/doublejump.qc
+			// and fix unfixable prediction errors with CPM double jumps
+			// push down, 0.03125 more than we moved up (for onground detection)
+			//steppush = vec3(0, 0, (org.z - this.origin_z) - (STAT(DOUBLEJUMP, this) >= 3 ? 0.03125 : 0));
 			steppush = vec3(0, 0, org.z - this.origin_z);
 			if(!_Movetype_PushEntity(this, steppush, true, false))
 			{
@@ -269,6 +273,47 @@ int _Movetype_FlyMove(entity this, float dt, bool applygravity, bool applystepno
 				trace_endpos = this.origin;
 				time_left *= 1 - trace2_fraction;
 				numplanes = 0;
+
+				// experiment, to avoid the need for the tracebox in common/mutators/mutator/doublejump/doublejump.qc
+				// and fix unfixable prediction errors with CPM double jumps
+				if (trace_fraction < 1 && trace_plane_normal.z > 0.7)
+				{
+					// hit a valid floor with our pushdown
+					// we can double jump from this
+					// and start skimming to make df_cpma3x-1 tricks reliable
+
+					// Q3 skimming: set timer and first csqc moveframe
+					if(PHYS_SKIMMING(this) && !(this.flags & FL_WATERJUMP))
+					if(!IS_ONGROUND(this) && (PHYS_SKIMMING(this) == 2 || restore_velocity.z < -200)) // don't do landing time if we were just going down a slope
+#ifdef CSQC
+						// do not allow timer resets during replay
+						if (first_skimming_moveframe < csqcplayer_moveframe)
+#endif
+						{
+#ifdef CSQC
+							first_skimming_moveframe = csqcplayer_moveframe;
+#endif
+							this.pm_time = time + 0.25;
+							skimming = true;
+						}
+
+					if (STAT(DOUBLEJUMP, this) == 3 && PHYS_INPUT_BUTTON_JUMP(this))
+					{
+						SET_ONGROUND(this);
+						this.groundentity = trace_ent;
+						blockedflag |= 1;
+						// need this or stepup doublejumps are ridonkulous
+						this.velocity.z = primal_velocity.z = 0;
+
+						// FIXME do we actually need this here ? doesn't look like it
+						// TODO test what this does in Q2 double jumps
+						// we MUST clip velocity here!
+						//float f = this.velocity * trace_plane_normal;
+						//if (f < 0)
+						//	this.velocity -= f * trace_plane_normal;
+					}
+				}
+
 				continue;
 			}
 			else

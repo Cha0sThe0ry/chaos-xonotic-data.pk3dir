@@ -327,6 +327,7 @@ When you press the jump key
 returns true if handled
 =============
 */
+.float jump_time;
 bool PlayerJump(entity this)
 {
 	if (PHYS_FROZEN(this))
@@ -419,6 +420,41 @@ bool PlayerJump(entity this)
 			LOG_TRACE(ftos(this.jumppadcount), "x jumppad combo");
 		this.jumppadcount = 0;
 #endif
+	}
+
+	// bones_was_here: CPM double jumps
+	// adds 100 to jumpvelocity if the previous jump occurred in the last 400ms
+	// CSQC prediction of timed physics features requires tracking the moveframe range
+	if (STAT(DOUBLEJUMP, this) > 1)
+	{
+#ifdef CSQC
+		static int singlejump_moveframe = 0, last_moveframe = 0;
+		bool updatetime = false;
+
+		if (last_moveframe < csqcplayer_moveframe)
+		{
+			updatetime = true;
+#endif
+			if (time < this.jump_time + 0.4)
+#ifdef CSQC
+				last_moveframe = csqcplayer_moveframe;
+		}
+
+		if (singlejump_moveframe < csqcplayer_moveframe && last_moveframe >= csqcplayer_moveframe)
+#endif
+		{
+			if (IS_ONGROUND(this))
+				this.velocity_z += 100;	// ramp, teleport, head bang (and step up in new method)
+			else
+				this.velocity_z = 100;  // step up (only when using old mutator tracebox)
+		}
+#ifdef CSQC
+		else
+			singlejump_moveframe = csqcplayer_moveframe;
+
+		if (updatetime)
+#endif
+			this.jump_time = time;
 	}
 
 	this.velocity_z += mjumpheight;
