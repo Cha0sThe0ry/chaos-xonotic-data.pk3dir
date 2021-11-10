@@ -1,5 +1,10 @@
 //FEATURE: Ignore command to keep spammers out of your personal chat log for a match
 
+#include "ignore.qh"
+#include <server/world.qh>
+#include <server/mutators/events.qh>
+#include <server/command/common.qh>
+
 REGISTER_MUTATOR(ignore, true);
 
 const int IGNORE_MAXPLAYERS = 5;

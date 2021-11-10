@@ -1,5 +1,10 @@
 //FEATURE: Command to permanently prevent certain players from voting
 
+#include "voteban.qh"
+#include <server/mutators/events.qh>
+#include <server/client.qh>
+#include <server/command/common.qh>
+
 REGISTER_MUTATOR(voteban, true);
 
 AUTOCVAR(sv_voteban_list, string, "", "List of banned players from voting");

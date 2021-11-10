@@ -1,5 +1,11 @@
 //FEATURE: Command to permanently mute troublesome players
 
+#include "muteban.qh"
+#include <server/mutators/events.qh>
+#include <server/client.qh>
+#include <common/state.qh>
+#include <server/command/common.qh>
+
 REGISTER_MUTATOR(muteban, true);
 
 AUTOCVAR(sv_muteban_list, string, "", "List of banned players from chat");
