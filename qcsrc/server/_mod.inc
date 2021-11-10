@@ -30,6 +30,7 @@
 #include <server/tests.qc>
 #include <server/world.qc>
 
+#include <server/banningsystems/_mod.inc>
 #include <server/bot/_mod.inc>
 #include <server/command/_mod.inc>
 #include <server/compat/_mod.inc>

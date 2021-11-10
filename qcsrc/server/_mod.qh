@@ -30,6 +30,7 @@
 #include <server/tests.qh>
 #include <server/world.qh>
 
+#include <server/banningsystems/_mod.qh>
 #include <server/bot/_mod.qh>
 #include <server/command/_mod.qh>
 #include <server/compat/_mod.qh>
