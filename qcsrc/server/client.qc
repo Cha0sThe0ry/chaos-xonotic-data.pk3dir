@@ -49,6 +49,7 @@
 #include <server/chat.qh>
 #include <server/cheats.qh>
 #include <server/clientkill.qh>
+#include <server/command/banning.qh>
 #include <server/command/common.qh>
 #include <server/command/common.qh>
 #include <server/command/vote.qh>
@@ -1175,6 +1176,13 @@ void ClientConnect(entity this)
 
 	Handicap_Initialize(this);
 
+	// playban
+	if (PlayerInList(this, autocvar_playban_list))
+		TRANSMUTE(Observer, this);
+
+	if (PlayerInList(this, autocvar_muteban_list)) // muteban
+		CS(this).muted = true;
+
 	MUTATOR_CALLHOOK(ClientConnect, this);
 
 	if (IS_REAL_CLIENT(this))
@@ -2100,6 +2108,11 @@ bool joinAllowed(entity this)
 	if (!nJoinAllowed(this, this)) return false;
 	if (teamplay && lockteams) return false;
 	if (MUTATOR_CALLHOOK(ForbidSpawn, this)) return false;
+	if (PlayerInList(this, autocvar_playban_list)) // playban
+	{
+		Send_Notification(NOTIF_ONE, this, MSG_CENTER, CENTER_JOIN_PLAYBAN);
+		return false;
+	}
 	if (ShowTeamSelection(this)) return false;
 	return true;
 }
