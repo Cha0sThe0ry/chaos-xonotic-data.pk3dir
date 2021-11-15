@@ -11,6 +11,7 @@
 #include <server/gamelog.qc>
 #include <server/handicap.qc>
 #include <server/hook.qc>
+#include <server/ignore.qc>
 #include <server/impulse.qc>
 #include <server/intermission.qc>
 #include <server/ipban.qc>
@@ -30,7 +31,6 @@
 #include <server/tests.qc>
 #include <server/world.qc>
 
-#include <server/banningsystems/_mod.inc>
 #include <server/bot/_mod.inc>
 #include <server/command/_mod.inc>
 #include <server/compat/_mod.inc>

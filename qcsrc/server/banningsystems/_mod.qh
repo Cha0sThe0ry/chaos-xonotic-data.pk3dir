@@ -1,6 +1,0 @@
-// generated file; do not modify
-#include <server/banningsystems/ignore.qh>
-#include <server/banningsystems/muteban.qh>
-#include <server/banningsystems/playban.qh>
-#include <server/banningsystems/superban.qh>
-#include <server/banningsystems/voteban.qh>
