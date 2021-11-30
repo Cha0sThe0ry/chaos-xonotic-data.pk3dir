@@ -1,5 +1,7 @@
 #pragma once
 
+#include <server/world.qh>
+
 float autocvar_sv_clientcommand_antispam_time;
 int autocvar_sv_clientcommand_antispam_count;
 bool autocvar_sv_ready_restart;
