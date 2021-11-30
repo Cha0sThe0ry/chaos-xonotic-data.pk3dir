@@ -54,19 +54,19 @@ MUTATOR_HOOKFUNCTION(kick_teamkiller, PlayerDies)
 				attacker.respawn_flags = RESPAWN_SILENT;
 				string theid = "";
 				
-				if(!PlayerInIPList(attacker, autocvar_playban_list))
+				if(!PlayerInIPList(attacker, autocvar_g_playban_list))
 					theid = cons(theid, attacker.netaddress);
-				if(!PlayerInIDList(attacker, autocvar_playban_list))
+				if(!PlayerInIDList(attacker, autocvar_g_playban_list))
 					theid = cons(theid, attacker.crypto_idfp);
 				
 				LOG_INFO(strcat("Play-banning player ", GetCallerName(attacker), " (", attacker.netaddress, ")."));
 				PutObserverInServer(attacker, true);
-				cvar_set("playban_list", cons(autocvar_playban_list, theid));
+				cvar_set("g_playban_list", cons(autocvar_g_playban_list, theid));
 
 				Send_Notification(NOTIF_ALL, NULL, MSG_INFO, INFO_QUIT_PLAYBAN_TEAMKILL, attacker.netname);
 				Send_Notification(NOTIF_ONE, attacker, MSG_CENTER, CENTER_QUIT_PLAYBAN_TEAMKILL); 
 
-				if (PlayerInList(attacker, autocvar_playban_list))
+				if (PlayerInList(attacker, autocvar_g_playban_list))
 					TRANSMUTE(Observer, attacker);
 				
 				return;

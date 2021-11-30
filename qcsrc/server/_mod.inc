@@ -11,7 +11,6 @@
 #include <server/gamelog.qc>
 #include <server/handicap.qc>
 #include <server/hook.qc>
-#include <server/ignore.qc>
 #include <server/impulse.qc>
 #include <server/intermission.qc>
 #include <server/ipban.qc>

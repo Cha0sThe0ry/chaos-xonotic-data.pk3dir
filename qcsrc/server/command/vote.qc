@@ -796,7 +796,7 @@ void VoteCommand_abstain(int request, entity caller)  // CLIENT ONLY
 	{
 		case CMD_REQUEST_COMMAND:
 		{
-			if (PlayerInList(caller, autocvar_voteban_list)) // voteban
+			if (PlayerInList(caller, autocvar_g_voteban_list)) // voteban
 			{
 				print_to(caller, "^1You are banned from voting.");
 				Send_Notification(NOTIF_ONE, caller, MSG_CENTER, CENTER_VOTEBANYN);
@@ -845,7 +845,7 @@ void VoteCommand_call(int request, entity caller, int argc, string vote_command)
 			float tmp_playercount = 0;
 			int parse_error;
 
-			if (PlayerInList(caller, autocvar_voteban_list)) // voteban
+			if (PlayerInList(caller, autocvar_g_voteban_list)) // voteban
 			{
 				print_to(caller, "^1You are banned from calling a vote.");
 				Send_Notification(NOTIF_ONE, caller, MSG_CENTER, CENTER_VOTEBAN);
@@ -1067,7 +1067,7 @@ void VoteCommand_no(int request, entity caller)  // CLIENT ONLY
 	{
 		case CMD_REQUEST_COMMAND:
 		{
-			if (PlayerInList(caller, autocvar_voteban_list)) // voteban
+			if (PlayerInList(caller, autocvar_g_voteban_list)) // voteban
 			{
 				print_to(caller, "^1You are banned from voting.");
 				Send_Notification(NOTIF_ONE, caller, MSG_CENTER, CENTER_VOTEBANYN);
@@ -1156,7 +1156,7 @@ void VoteCommand_yes(int request, entity caller)  // CLIENT ONLY
 	{
 		case CMD_REQUEST_COMMAND:
 		{
-			if (PlayerInList(caller, autocvar_voteban_list)) // voteban
+			if (PlayerInList(caller, autocvar_g_voteban_list)) // voteban
 			{
 				print_to(caller, "^1You are banned from voting.");
 				Send_Notification(NOTIF_ONE, caller, MSG_CENTER, CENTER_VOTEBANYN);

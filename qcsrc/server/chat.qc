@@ -7,6 +7,7 @@
 #include <common/util.qh>
 #include <common/weapons/weapon.qh>
 #include <common/wepent.qh>
+#include <server/command/cmd.qh>
 #include <server/command/common.qh>
 #include <server/gamelog.qh>
 #include <server/main.qh>
@@ -283,6 +284,9 @@ int Say(entity source, int teamsay, entity privatesay, string msgin, bool floodc
 			if (!autocvar_g_chat_tellprivacy) { dedicated_print(msgstr); } // send to server console too if "tellprivacy" is disabled
 			if(!MUTATOR_CALLHOOK(ChatMessageTo, privatesay, source))
 			{
+				if(IS_REAL_CLIENT(source) && ignore_playerinlist(source, privatesay)) // check ignored players from personal chat log (from "ignore" command)
+					return -1; // no sending to this player, thank you very much
+
 				sprint(privatesay, msgstr);
 				if(cmsgstr != "")
 					centerprint(privatesay, cmsgstr);
