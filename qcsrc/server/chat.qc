@@ -297,7 +297,10 @@ int Say(entity source, int teamsay, entity privatesay, string msgin, bool floodc
 			sprint(source, sourcemsgstr);
 			dedicated_print(msgstr); // send to server console too
 			FOREACH_CLIENT(IS_REAL_CLIENT(it) && it != source && CS(it).active_minigame == CS(source).active_minigame && !MUTATOR_CALLHOOK(ChatMessageTo, it, source), {
-				sprint(it, msgstr);
+				if(IS_REAL_CLIENT(source) && ignore_playerinlist(source, it)) // check ignored players from personal chat log (from "ignore" command)
+					return -1; // no sending to this player, thank you very much
+				else
+					sprint(it, msgstr);
 			});
 			event_log_msg = sprintf(":chat_minigame:%d:%s:%s", source.playerid, CS(source).active_minigame.netname, msgin);
 
@@ -309,9 +312,14 @@ int Say(entity source, int teamsay, entity privatesay, string msgin, bool floodc
 			if(sourcecmsgstr != "")
 				centerprint(source, sourcecmsgstr);
 			FOREACH_CLIENT((IS_PLAYER(it) || it.caplayer) && IS_REAL_CLIENT(it) && it != source && it.team == source.team && !MUTATOR_CALLHOOK(ChatMessageTo, it, source), {
-				sprint(it, msgstr);
-				if(cmsgstr != "")
-					centerprint(it, cmsgstr);
+				if(IS_REAL_CLIENT(source) && ignore_playerinlist(source, it)) // check ignored players from personal chat log (from "ignore" command)
+					return -1; // no sending to this player, thank you very much
+				else
+				{
+					sprint(it, msgstr);
+					if(cmsgstr != "")
+						centerprint(it, cmsgstr);
+				}
 			});
 			event_log_msg = sprintf(":chat_team:%d:%d:%s", source.playerid, source.team, strreplace("\n", " ", msgin));
 		}
@@ -320,7 +328,10 @@ int Say(entity source, int teamsay, entity privatesay, string msgin, bool floodc
 			sprint(source, sourcemsgstr);
 			dedicated_print(msgstr); // send to server console too
 			FOREACH_CLIENT(!(IS_PLAYER(it) || it.caplayer) && IS_REAL_CLIENT(it) && it != source && !MUTATOR_CALLHOOK(ChatMessageTo, it, source), {
-				sprint(it, msgstr);
+				if(IS_REAL_CLIENT(source) && ignore_playerinlist(source, it)) // check ignored players from personal chat log (from "ignore" command)
+					return -1; // no sending to this player, thank you very much
+				else
+					sprint(it, msgstr);
 			});
 			event_log_msg = sprintf(":chat_spec:%d:%s", source.playerid, strreplace("\n", " ", msgin));
 		}
@@ -332,7 +343,10 @@ int Say(entity source, int teamsay, entity privatesay, string msgin, bool floodc
 				MX_Say(strcat(playername(source.netname, source.team, IS_PLAYER(source)), "^7: ", msgin));
 			}
 			FOREACH_CLIENT(IS_REAL_CLIENT(it) && it != source && !MUTATOR_CALLHOOK(ChatMessageTo, it, source), {
-				sprint(it, msgstr);
+				if(IS_REAL_CLIENT(source) && ignore_playerinlist(source, it)) // check ignored players from personal chat log (from "ignore" command)
+					return -1; // no sending to this player, thank you very much
+				else
+					sprint(it, msgstr);
 			});
 			event_log_msg = sprintf(":chat:%d:%s", source.playerid, strreplace("\n", " ", msgin));
 		}
