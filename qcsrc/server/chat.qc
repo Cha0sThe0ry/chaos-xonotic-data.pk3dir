@@ -356,7 +356,6 @@ int Say(entity source, int teamsay, entity privatesay, string msgin, bool floodc
 		GameLogEcho(event_log_msg);
 	}
 
-
 	return ret;
 }
 
