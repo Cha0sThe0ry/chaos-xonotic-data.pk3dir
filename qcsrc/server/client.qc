@@ -2122,11 +2122,6 @@ bool joinAllowed(entity this)
 	if (!nJoinAllowed(this, this)) return false;
 	if (teamplay && lockteams) return false;
 	if (MUTATOR_CALLHOOK(ForbidSpawn, this)) return false;
-	if (PlayerInList(this, autocvar_g_playban_list)) // playban
-	{
-		Send_Notification(NOTIF_ONE, this, MSG_CENTER, CENTER_JOIN_PLAYBAN);
-		return false;
-	}
 	if (ShowTeamSelection(this)) return false;
 	return true;
 }
@@ -2347,8 +2342,10 @@ void ObserverOrSpectatorThink(entity this)
 			if(this.flags & FL_SPAWNING)
 			{
 				this.flags &= ~FL_SPAWNING;
-				if(joinAllowed(this))
+				if(joinAllowed(this) && !PlayerInList(this, autocvar_g_playban_list)) // checking playban list if player can be allowed to join
 					Join(this);
+				else if(PlayerInList(this, autocvar_g_playban_list)) // playban
+					Send_Notification(NOTIF_ONE, this, MSG_CENTER, CENTER_JOIN_PLAYBAN);
 				else if(time < CS(this).jointime + MIN_SPEC_TIME)
 					CS(this).autojoin_checked = -1;
 				return;
