@@ -25,6 +25,21 @@
  */
 int Say(entity source, int teamsay, entity privatesay, string msgin, bool floodcontrol)
 {
+	if (autocvar_g_chat_muted == 2)
+	{
+		sprint(source, "^1Server muted. Nobody can send messages.\n");
+		return -1;
+	}
+
+	if (IS_OBSERVER(source))
+	{
+		if (autocvar_g_chat_muted == 1)
+		{
+			sprint(source, "^1Spectator chat muted. No spectator can send messages.\n");
+			return -1;
+		}
+	}
+
 	if (!teamsay && !privatesay && substring(msgin, 0, 1) == " ")
 		msgin = substring(msgin, 1, -1); // work around DP say bug (say_team does not have this!)
 

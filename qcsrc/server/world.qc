@@ -232,6 +232,7 @@ void cvar_changes_init()
 		BADCVAR("sys_specialcharactertranslation");
 		BADCVAR("timeformat");
 		BADCVAR("timestamps");
+		BADCVAR("g_chat_muted");
 		BADCVAR("g_require_stats");
 		BADCVAR("g_muteban_list");
 		BADCVAR("g_playban_list");
