@@ -47,7 +47,7 @@ void Announcer_Countdown(entity this)
 	{
 		if(inround)
 		{
-			Local_Notification(MSG_CENTER, CENTER_COUNTDOWN_ROUNDSTART, countdown_rounded);
+			Local_Notification(MSG_CENTER, CENTER_COUNTDOWN_ROUNDSTART, STAT(ROUND_NUMBER) + 1, countdown_rounded);
 			Notification annce_num = Announcer_PickNumber(CNT_ROUNDSTART, countdown_rounded);
 			if(annce_num != NULL)
 				Local_Notification(MSG_ANNCE, annce_num);
