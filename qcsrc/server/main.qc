@@ -191,6 +191,7 @@ void Pause_TryPause(bool ispaused)
 	int n = 0;
 	FOREACH_CLIENT(IS_PLAYER(it) && IS_REAL_CLIENT(it), {
 		if (PHYS_INPUT_BUTTON_CHAT(it) != ispaused) return;
+		stuffcmd(it, "cd resume\n"); // work around engine pausing music
 		++n;
 	});
 	if (!n) return;
