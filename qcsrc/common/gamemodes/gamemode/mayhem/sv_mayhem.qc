@@ -175,10 +175,11 @@ void FFAMayhemCalculatePlayerScore(entity scorer)
 			GameRules_scoring_add_team(scorer, SCORE, floor(scoretoadd / 100));
 																	// / 100 to move back to the decimal level
 
-			if(0){
+			if(1){
 				//debug printing
 				if(!IS_BOT_CLIENT(scorer)){
 					print(sprintf("%f", scorer.total_damage_dealt), 		" scorer.total_damage_dealt \n");
+					print(sprintf("%f", scorer.hitsound_damage_dealt),		" scorer.hitsound_damage_dealt \n");
 					print(sprintf("%f", playerdamagescore), 				" playerdamagescore \n");
 					print(sprintf("%f", roundedplayerdamagescore), 			" rounded playerdamagescore \n");
 					print(sprintf("%f", playerkillscore), 					" playerkillscore \n");
@@ -200,7 +201,7 @@ void FFAMayhemCalculatePlayerScore(entity scorer)
 			float scoretoadd = (playerscorevisual - PlayerScore_Get(scorer, SP_SCORE));
 			GameRules_scoring_add_team(scorer, SCORE, floor(scoretoadd));
 
-			if(0){
+			if(1){
 				//debug printing
 				if(!IS_BOT_CLIENT(scorer)){
 					print(sprintf("%f", playerkillscore), 					" playerkillscore \n");
@@ -222,7 +223,7 @@ void FFAMayhemCalculatePlayerScore(entity scorer)
 			float scoretoadd = (playerscorevisual - (PlayerScore_Get(scorer, SP_SCORE) * 100));
 			GameRules_scoring_add_team(scorer, SCORE, floor(scoretoadd / 100));
 
-			if(0){
+			if(1){
 				//debug printing
 				if(!IS_BOT_CLIENT(scorer)){
 					print(sprintf("%f", scorer.total_damage_dealt), 		" scorer.total_damage_dealt \n");
@@ -291,6 +292,13 @@ MUTATOR_HOOKFUNCTION(mayhem, PlayerDamage_SplitHealthArmor)
 				frag_target.total_damage_dealt -= total;
 
 		scorer = frag_target;
+	}
+
+	if(0){
+		//debug printing
+		if(!IS_BOT_CLIENT(scorer)){
+			print(sprintf("%f", total), " total dmg from PlayerDamage_SplitHealthArmor \n");
+		}
 	}
 
 	FFAMayhemCalculatePlayerScore(scorer);
