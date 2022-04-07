@@ -663,10 +663,17 @@ string Scoreboard_GetField(entity pl, PlayerScoreField field)
 			f = pl.ping;
 			if(f == 0)
 				return _("N/A");
-			if(f < 80)
-				sbt_field_rgb = '0 1 0' + '1 0 1' * max(0, min(60, f-20)) / 60;
+			const int PING_BEST = 40;
+			const int PING_MED = 90;
+			const int PING_HIGH = 150;
+			if(f < PING_BEST)
+				sbt_field_rgb = '0 1 0';
+			else if(f < PING_MED)
+				sbt_field_rgb = '0 1 0' + '1 -0.3 0' * ((f - PING_BEST) / (PING_MED - PING_BEST));
+			else if(f < PING_HIGH)
+				sbt_field_rgb = '1 0.7 0' + '0 -0.7 0' * ((f - PING_MED) / (PING_HIGH - PING_MED));
 			else
-				sbt_field_rgb = '1 1 1' - '0 1 1' * max(0, min(220, f-80)) / 220;
+				sbt_field_rgb = '1 0 0';
 			return ftos(f);
 
 		case SP_PL:
