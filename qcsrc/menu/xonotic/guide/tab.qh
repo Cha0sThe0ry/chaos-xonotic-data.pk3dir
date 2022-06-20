@@ -99,7 +99,7 @@ REGISTRY_SOURCE(GametypeSource, Gametypes)
 REGISTRY_SOURCE(ItemSource, Items)
 
 #include <common/mutators/mutator/buffs/buffs.qh>
-REGISTRY_SOURCE(BuffSource, Buffs)
+REGISTRY_SOURCE(BuffSource, StatusEffect)
 
 #include <common/mutators/mutator/nades/nades.qh>
 REGISTRY_SOURCE(NadeSource, Nades)
