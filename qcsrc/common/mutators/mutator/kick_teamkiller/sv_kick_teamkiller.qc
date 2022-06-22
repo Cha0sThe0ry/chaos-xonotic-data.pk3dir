@@ -60,7 +60,7 @@ MUTATOR_HOOKFUNCTION(kick_teamkiller, PlayerDies)
 					theid = cons(theid, attacker.crypto_idfp);
 				
 				LOG_INFO(strcat("Play-banning player ", GetCallerName(attacker), " (", attacker.netaddress, ")."));
-				PutObserverInServer(attacker, true);
+				PutObserverInServer(attacker, true, true);
 				cvar_set("g_playban_list", cons(autocvar_g_playban_list, theid));
 
 				Send_Notification(NOTIF_ALL, NULL, MSG_INFO, INFO_QUIT_PLAYBAN_TEAMKILL, attacker.netname);

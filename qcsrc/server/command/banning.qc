@@ -182,7 +182,7 @@ void BanCommand_playban(int request, int argc, string command)
 						theid = cons(theid, client.crypto_idfp);
 					
 					LOG_INFO(strcat("Play-banning player ", GetCallerName(client), " (", argv(1), ")."));
-					PutObserverInServer(client, true);
+					PutObserverInServer(client, true, true);
 					cvar_set("g_playban_list", cons(autocvar_g_playban_list, theid));
 					
 					return;
