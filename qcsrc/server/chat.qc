@@ -28,6 +28,15 @@ int Say(entity source, int teamsay, entity privatesay, string msgin, bool floodc
 {
 	switch(autocvar_g_chat_allowed)
 	{
+		case 0: 
+		{
+			if (IS_REAL_CLIENT(source))
+			{
+				Send_Notification(NOTIF_ONE_ONLY, source, MSG_INFO, INFO_CHAT_DISABLED);
+				return 0;
+			}
+			break;
+		}
 		case 1:
 		{
 			if (IS_OBSERVER(source))
@@ -51,15 +60,6 @@ int Say(entity source, int teamsay, entity privatesay, string msgin, bool floodc
 			if (privatesay)
 			{
 				Send_Notification(NOTIF_ONE_ONLY, source, MSG_INFO, INFO_CHAT_PRIVATE_DISABLED);
-				return 0;
-			}
-			break;
-		}
-		case 4: 
-		{
-			if (IS_REAL_CLIENT(source))
-			{
-				Send_Notification(NOTIF_ONE_ONLY, source, MSG_INFO, INFO_CHAT_DISABLED);
 				return 0;
 			}
 			break;
