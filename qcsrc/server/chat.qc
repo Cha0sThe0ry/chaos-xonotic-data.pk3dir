@@ -3,6 +3,7 @@
 #include <common/gamemodes/_mod.qh>
 #include <common/mapobjects/target/location.qh>
 #include <common/mapobjects/triggers.qh>
+#include <common/notifications/all.qh>
 #include <common/teams.qh>
 #include <common/util.qh>
 #include <common/weapons/weapon.qh>
@@ -25,18 +26,43 @@
  */
 int Say(entity source, int teamsay, entity privatesay, string msgin, bool floodcontrol)
 {
-	if (autocvar_g_chat_muted == 2)
+	switch(autocvar_g_chat_allowed)
 	{
-		sprint(source, "^1Server muted. Nobody can send messages.\n");
-		return -1;
-	}
-
-	if (IS_OBSERVER(source))
-	{
-		if (autocvar_g_chat_muted == 1)
+		case 1:
 		{
-			sprint(source, "^1Spectator chat muted. No spectator can send messages.\n");
-			return -1;
+			if (IS_OBSERVER(source))
+			{
+				Send_Notification(NOTIF_ONE_ONLY, source, MSG_INFO, INFO_CHAT_SPECTATOR_DISABLED);
+				return 0;
+			}
+			break;
+		}
+		case 2: 
+		{
+			if (teamsay)
+			{
+				Send_Notification(NOTIF_ONE_ONLY, source, MSG_INFO, INFO_CHAT_TEAM_DISABLED);
+				return 0;
+			}
+			break;
+		}
+		case 3:
+		{
+			if (privatesay)
+			{
+				Send_Notification(NOTIF_ONE_ONLY, source, MSG_INFO, INFO_CHAT_PRIVATE_DISABLED);
+				return 0;
+			}
+			break;
+		}
+		case 4: 
+		{
+			if (IS_REAL_CLIENT(source))
+			{
+				Send_Notification(NOTIF_ONE_ONLY, source, MSG_INFO, INFO_CHAT_DISABLED);
+				return 0;
+			}
+			break;
 		}
 	}
 
