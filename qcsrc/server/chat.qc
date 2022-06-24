@@ -55,8 +55,74 @@ int Say(entity source, int teamsay, entity privatesay, string msgin, bool floodc
 			}
 			break;
 		}
-		case 3:
+		case 4:
 		{
+			if (privatesay)
+			{
+				Send_Notification(NOTIF_ONE_ONLY, source, MSG_INFO, INFO_CHAT_PRIVATE_DISABLED);
+				return 0;
+			}
+			break;
+		}
+		case 5:
+		{
+			if (IS_OBSERVER(source))
+			{
+				Send_Notification(NOTIF_ONE_ONLY, source, MSG_INFO, INFO_CHAT_SPECTATOR_DISABLED);
+				return 0;
+			}
+
+			if (teamsay)
+			{
+				Send_Notification(NOTIF_ONE_ONLY, source, MSG_INFO, INFO_CHAT_TEAM_DISABLED);
+				return 0;
+			}
+			break;
+		}
+		case 6:
+		{
+			if (IS_OBSERVER(source))
+			{
+				Send_Notification(NOTIF_ONE_ONLY, source, MSG_INFO, INFO_CHAT_SPECTATOR_DISABLED);
+				return 0;
+			}
+
+			if (privatesay)
+			{
+				Send_Notification(NOTIF_ONE_ONLY, source, MSG_INFO, INFO_CHAT_PRIVATE_DISABLED);
+				return 0;
+			}
+			break;
+		}
+		case 7:
+		{
+			if (teamsay)
+			{
+				Send_Notification(NOTIF_ONE_ONLY, source, MSG_INFO, INFO_CHAT_TEAM_DISABLED);
+				return 0;
+			}
+
+			if (privatesay)
+			{
+				Send_Notification(NOTIF_ONE_ONLY, source, MSG_INFO, INFO_CHAT_PRIVATE_DISABLED);
+				return 0;
+			}
+			break;
+		}
+		case 8:
+		{
+			if (IS_OBSERVER(source))
+			{
+				Send_Notification(NOTIF_ONE_ONLY, source, MSG_INFO, INFO_CHAT_SPECTATOR_DISABLED);
+				return 0;
+			}
+
+			if (teamsay)
+			{
+				Send_Notification(NOTIF_ONE_ONLY, source, MSG_INFO, INFO_CHAT_TEAM_DISABLED);
+				return 0;
+			}
+
 			if (privatesay)
 			{
 				Send_Notification(NOTIF_ONE_ONLY, source, MSG_INFO, INFO_CHAT_PRIVATE_DISABLED);
