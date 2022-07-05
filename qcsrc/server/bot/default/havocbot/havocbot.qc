@@ -1256,6 +1256,19 @@ void havocbot_movetogoal(entity this)
 	CS(this).movement_y = dir * v_right * maxspeed;
 	CS(this).movement_z = dir * v_up * maxspeed;
 
+	// an attempt of trying to make the bots dodge randomly and
+	// not just walk straight towards their opponents, in practice
+	// this makes them half of the time move to a random direction for a tick,
+	// effectively this is worthless as random directions cancel out each other and
+	// half of the time the bot still walks towards their opponent
+	//if (skill >= 69 && this.aistatus == AI_STATUS_ATTACKING && random() < 0.5)
+	//{
+	//	CS(this).movement_x = (random() - 0.5) * 2 * maxspeed;
+	//	CS(this).movement_y = (random() - 0.5) * 2 * maxspeed;
+	//	CS(this).movement_z = (random() - 0.5) * 2 * maxspeed; 
+	//}
+
+
 	// Emulate keyboard interface
 	if (skill < 10)
 		havocbot_keyboard_movement(this, destorg);
@@ -1330,7 +1343,12 @@ void havocbot_chooseenemy(entity this)
 	}
 	if (time < this.havocbot_chooseenemy_finished)
 		return;
-	this.havocbot_chooseenemy_finished = time + autocvar_bot_ai_enemydetectioninterval;
+	// don't limit the detection interval to several seconds for bots with enough skill
+	if (skill < 69)
+		this.havocbot_chooseenemy_finished = time + autocvar_bot_ai_enemydetectioninterval;
+	else
+		this.havocbot_chooseenemy_finished = time + 0.1;
+	
 	vector eye = this.origin + this.view_ofs;
 	entity best = NULL;
 	float bestrating = autocvar_bot_ai_enemydetectionradius ** 2;
@@ -1363,11 +1381,16 @@ LABEL(scan_targets)
 				continue;
 
 			vector v = (it.absmin + it.absmax) * 0.5;
-			float rating = vlen2(v - eye);
+			float rating;
+			if (skill >= 69)
+				rating = 0;
+			else
+				rating = vlen2(v - eye);
+
 			if (rating < bestrating && bot_shouldattack(this, it))
 			{
 				traceline(eye, v, true, this);
-				if (trace_ent == it || trace_fraction >= 1)
+				if (trace_ent == it || trace_fraction == 1)
 				{
 					best = it;
 					bestrating = rating;
@@ -1380,6 +1403,7 @@ LABEL(scan_targets)
 			scan_secondary_targets = true;
 			// restart the loop
 			bestrating = autocvar_bot_ai_enemydetectionradius ** 2;
+
 			goto scan_targets;
 		}
 
