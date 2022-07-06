@@ -1259,14 +1259,14 @@ void havocbot_movetogoal(entity this)
 	// when high enough skill bots engage in combat they move randomly
 	if (skill >= 69 && this.aistatus == AI_STATUS_ATTACKING && !dodge)
 	{
-		if (!this.randomdirectiontime || this.randomdirectiontime + 0.3 < time)
+		if (!this.randomdirectiontime || this.randomdirectiontime + 0.35 < time)
 		{
 			// 75% chance to generate a random direction to follow for
-			// 0.2 seconds, there's a 25% chance to fail the generation
-			// and only generation attempt one every 0.3s so bots move
+			// 0.3 seconds, there's a 15% chance to fail the generation
+			// and only generation attempt one every 0.35s so bots move
 			// towards their goal slightly
 			// TODO: don't walk off edges and detect hazards etc.
-			if (random() < 0.25)
+			if (random() < 0.15)
 				this.randomdirection = '0 0 0';
 			else
 			{
@@ -1277,7 +1277,7 @@ void havocbot_movetogoal(entity this)
 
 			this.randomdirectiontime = time;
 		}
-		if (this.randomdirectiontime + 0.2 >= time && this.randomdirection)
+		if (this.randomdirectiontime + 0.3 >= time && this.randomdirection)
 		{
 			CS(this).movement_x = this.randomdirection.x;
 			CS(this).movement_y = this.randomdirection.y;
