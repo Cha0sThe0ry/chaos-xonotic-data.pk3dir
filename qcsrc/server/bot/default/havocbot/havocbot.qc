@@ -1398,19 +1398,37 @@ LABEL(scan_targets)
 				continue;
 
 			vector v = (it.absmin + it.absmax) * 0.5;
-			float rating;
-			if (skill >= 69)
-				rating = 0;
-			else
-				rating = vlen2(v - eye);
+			float distance = vlen2(v - eye);
 
-			if (rating < bestrating && bot_shouldattack(this, it))
+			if (skill < 69)
 			{
-				traceline(eye, v, true, this);
-				if (trace_ent == it || trace_fraction >= 1)
+				if (distance < bestrating && bot_shouldattack(this, it))
 				{
-					best = it;
-					bestrating = rating;
+					traceline(eye, v, true, this);
+					if (trace_ent == it || trace_fraction >= 1)
+					{
+						best = it;
+						bestrating = distance;
+					}
+				}
+			}
+			else
+			{
+				if (bot_shouldattack(this, it))
+				{
+					// skilled enough bots take account target health and distance
+					float health = GetResource(it, RES_HEALTH);
+					float armor  = GetResource(it, RES_ARMOR);
+					float rating = bound(50, health + armor, 250) * distance;
+					if (!best || (rating < bestrating))
+					{
+						traceline(eye, v, true, this);
+						if (trace_ent == it || trace_fraction >= 1)
+						{
+							best = it;
+							bestrating = rating;
+						}
+					}
 				}
 			}
 		});
