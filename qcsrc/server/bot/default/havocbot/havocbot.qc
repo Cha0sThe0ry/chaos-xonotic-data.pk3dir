@@ -1256,17 +1256,34 @@ void havocbot_movetogoal(entity this)
 	CS(this).movement_y = dir * v_right * maxspeed;
 	CS(this).movement_z = dir * v_up * maxspeed;
 
-	// an attempt of trying to make the bots dodge randomly and
-	// not just walk straight towards their opponents, in practice
-	// this makes them half of the time move to a random direction for a tick,
-	// effectively this is worthless as random directions cancel out each other and
-	// half of the time the bot still walks towards their opponent
-	//if (skill >= 69 && this.aistatus == AI_STATUS_ATTACKING && random() < 0.5)
-	//{
-	//	CS(this).movement_x = (random() - 0.5) * 2 * maxspeed;
-	//	CS(this).movement_y = (random() - 0.5) * 2 * maxspeed;
-	//	CS(this).movement_z = (random() - 0.5) * 2 * maxspeed; 
-	//}
+	// when high enough skill bots engage in combat they move randomly
+	if (skill >= 69 && this.aistatus == AI_STATUS_ATTACKING && !dodge)
+	{
+		if (!this.randomdirectiontime || this.randomdirectiontime + 0.3 < time)
+		{
+			// 75% chance to generate a random direction to follow for
+			// 0.2 seconds, there's a 25% chance to fail the generation
+			// and only generation attempt one every 0.3s so bots move
+			// towards their goal slightly
+			// TODO: don't walk off edges and detect hazards etc.
+			if (random() < 0.25)
+				this.randomdirection = '0 0 0';
+			else
+			{
+				this.randomdirection.x = (random() - 0.5) * 2 * maxspeed;
+				this.randomdirection.y = (random() - 0.5) * 2 * maxspeed;
+				this.randomdirection.z = (random() - 0.5) * 2 * maxspeed;
+			}
+
+			this.randomdirectiontime = time;
+		}
+		if (this.randomdirectiontime + 0.2 >= time && this.randomdirection)
+		{
+			CS(this).movement_x = this.randomdirection.x;
+			CS(this).movement_y = this.randomdirection.y;
+			//CS(this).movement_z = (random() - 0.5) * 2 * maxspeed; //no random vertical direction
+		}
+	}
 
 
 	// Emulate keyboard interface
@@ -1390,7 +1407,7 @@ LABEL(scan_targets)
 			if (rating < bestrating && bot_shouldattack(this, it))
 			{
 				traceline(eye, v, true, this);
-				if (trace_ent == it || trace_fraction == 1)
+				if (trace_ent == it || trace_fraction >= 1)
 				{
 					best = it;
 					bestrating = rating;
@@ -1717,8 +1734,13 @@ void havocbot_setupbot(entity this)
 vector havocbot_dodge(entity this)
 {
 	// LordHavoc: disabled because this is too expensive
-	return '0 0 0';
-#if 0
+	// return '0 0 0';
+
+	// Dr. Jaska: re-enable this but only for bots with high enough skill
+	if (skill < 69)
+		return '0 0 0';
+
+//#if 0
 	entity head;
 	vector dodge, v, n;
 	float danger, bestdanger, vl, d;
@@ -1739,7 +1761,8 @@ vector havocbot_dodge(entity this)
 				if (d > (0 - head.bot_dodgerating))
 				if (d < (vl * 0.2 + head.bot_dodgerating))
 				{
-					// calculate direction and distance from the flight path, by removing the forward axis
+					// calculate direction and distance from the
+					// flight path by removing the forward axis
 					v = v - (n * (v * n));
 					danger = head.bot_dodgerating - vlen(v);
 					if (bestdanger < danger)
@@ -1763,5 +1786,5 @@ vector havocbot_dodge(entity this)
 		head = head.chain;
 	}
 	return dodge;
-#endif
+//#endif
 }
