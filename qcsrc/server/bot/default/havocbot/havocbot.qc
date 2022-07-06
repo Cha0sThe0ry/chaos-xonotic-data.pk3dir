@@ -1485,12 +1485,15 @@ void havocbot_chooseweapon(entity this, .entity weaponentity)
 		// TODO: don't do this but don't make bots hold out a blaster out either
 		for(i=0; i < REGISTRY_COUNT(Weapons) && bot_weapons_mid[i] != -1 ; ++i){
 			w = bot_weapons_mid[i];
-			if ( client_hasweapon(this, REGISTRY_GET(Weapons, w), weaponentity, true, false) )
+			if(bot_custom_weapon)
 			{
-				if ((this.(weaponentity).m_weapon==WEP_Null) || havocbot_chooseweapon_checkreload(this, weaponentity, w))
-					continue;
-				this.(weaponentity).m_switchweapon = REGISTRY_GET(Weapons, w);
-				return;
+				if (client_hasweapon(this, REGISTRY_GET(Weapons, w), weaponentity, true, false))
+				{
+					if ((this.(weaponentity).m_weapon==WEP_Null) || havocbot_chooseweapon_checkreload(this, weaponentity, w))
+						continue;
+					this.(weaponentity).m_switchweapon = REGISTRY_GET(Weapons, w);
+					return;
+				}
 			}
 		}
 		// If no weapon was chosen get the first available weapon
