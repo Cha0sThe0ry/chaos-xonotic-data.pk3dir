@@ -1469,6 +1469,7 @@ float havocbot_chooseweapon_checkreload(entity this, .entity weaponentity, int n
 void havocbot_chooseweapon(entity this, .entity weaponentity)
 {
 	int i;
+	float w;
 
 	// ;)
 	if(g_weaponarena_weapons == WEPSET(TUBA))
@@ -1480,6 +1481,18 @@ void havocbot_chooseweapon(entity this, .entity weaponentity)
 	// TODO: clean this up by moving it to weapon code
 	if(this.enemy==NULL)
 	{
+		// Choose the first available weapon from medium range weaponlist
+		// TODO: don't do this but don't make bots hold out a blaster out either
+		for(i=0; i < REGISTRY_COUNT(Weapons) && bot_weapons_mid[i] != -1 ; ++i){
+			w = bot_weapons_mid[i];
+			if ( client_hasweapon(this, REGISTRY_GET(Weapons, w), weaponentity, true, false) )
+			{
+				if ((this.(weaponentity).m_weapon==WEP_Null) || havocbot_chooseweapon_checkreload(this, weaponentity, w))
+					continue;
+				this.(weaponentity).m_switchweapon = REGISTRY_GET(Weapons, w);
+				return;
+			}
+		}
 		// If no weapon was chosen get the first available weapon
 		if(this.(weaponentity).m_weapon==WEP_Null)
 		FOREACH(Weapons, it != WEP_Null, {
@@ -1497,7 +1510,6 @@ void havocbot_chooseweapon(entity this, .entity weaponentity)
 	if(f < 1)
 		return;
 
-	float w;
 	float distance; distance=bound(10,vlen(this.origin-this.enemy.origin)-200,10000);
 
 	// Should it do a weapon combo?
