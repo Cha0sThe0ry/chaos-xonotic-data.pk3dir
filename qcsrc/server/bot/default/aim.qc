@@ -199,8 +199,8 @@ void bot_aimdir(entity this, vector v, float maxfiredeviation)
 	if (this.bot_prevaimtime == time)
 		return;
 
-	// if skill is funny number or higher bots will shoot hard
-	if(skill >= 69)
+	// if skill is high enough bots will not have any aim smoothing or aim errors
+	if(skill >= 101)
 	{
 		this.v_angle = vectoangles(normalize(v));
 

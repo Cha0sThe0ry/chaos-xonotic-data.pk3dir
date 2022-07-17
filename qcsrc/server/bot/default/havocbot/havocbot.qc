@@ -1257,7 +1257,7 @@ void havocbot_movetogoal(entity this)
 	CS(this).movement_z = dir * v_up * maxspeed;
 
 	// when high enough skill bots engage in combat they move randomly
-	if (skill >= 69 && this.aistatus == AI_STATUS_ATTACKING && !dodge)
+	if (skill >= 101 && this.aistatus == AI_STATUS_ATTACKING && !dodge)
 	{
 		if (!this.randomdirectiontime || this.randomdirectiontime + 0.35 < time)
 		{
@@ -1361,7 +1361,7 @@ void havocbot_chooseenemy(entity this)
 	if (time < this.havocbot_chooseenemy_finished)
 		return;
 	// don't limit the detection interval to several seconds for bots with enough skill
-	if (skill < 69)
+	if (skill < 101)
 		this.havocbot_chooseenemy_finished = time + autocvar_bot_ai_enemydetectioninterval;
 	else
 		this.havocbot_chooseenemy_finished = time + 0.1;
@@ -1400,7 +1400,7 @@ LABEL(scan_targets)
 			vector v = (it.absmin + it.absmax) * 0.5;
 			float distance = vlen2(v - eye);
 
-			if (skill < 69)
+			if (skill < 101)
 			{
 				if (distance < bestrating && bot_shouldattack(this, it))
 				{
@@ -1770,7 +1770,7 @@ vector havocbot_dodge(entity this)
 	// return '0 0 0';
 
 	// Dr. Jaska: re-enable this but only for bots with high enough skill
-	if (skill < 69)
+	if (skill < 101)
 		return '0 0 0';
 
 //#if 0
