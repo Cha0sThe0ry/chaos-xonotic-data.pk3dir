@@ -64,8 +64,8 @@ void bot_think(entity this)
 	if(autocvar_bot_god)
 		this.flags |= FL_GODMODE;
 
-	// if bot skill is funny number or higher don't limit their think frequency
-	if(skill < 69)
+	// if bot skill is high enough don't limit their think frequency
+	if(skill < 101)
 		this.bot_nextthink = max(time, this.bot_nextthink) + max(0.01, autocvar_bot_ai_thinkinterval * (0.5 ** this.bot_aiskill) * min(14 / (skill + 14), 1));
 	else
 		this.bot_nextthink = max(time, this.bot_nextthink) + 0.005;
@@ -94,8 +94,8 @@ void bot_think(entity this)
 	this.dmg_save = 0;
 	this.dmg_inflictor = NULL;
 
-	// if bot skill is funny number or higher don't assign latency to them
-	if(skill >= 69)
+	// if bot skill is high enough don't assign latency to them
+	if(skill >= 101)
 		CS(this).ping = 0;
 	else
 	{
@@ -289,8 +289,8 @@ void bot_setnameandstuff(entity this)
 	READSKILL(bot_thinkskill, 1, 0.5); // think skill
 	READSKILL(bot_aiskill, 2, 0); // "ai" skill
 
-	// if bot skill is funny number or higher don't limit their skill
-	if(skill >= 69)
+	// if bot skill is high enough don't limit their skill
+	if(skill >= 101)
 	{
 		// commented out means they're effectively unused
 		// no reason to set them, uncomment if this changes
