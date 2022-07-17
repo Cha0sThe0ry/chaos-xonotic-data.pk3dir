@@ -412,15 +412,7 @@ METHOD(Devastator, wr_aim, void(entity thiswep, entity actor, .entity weaponenti
 			float towardstarget = (v_forward * normalize(rocket.origin - it.origin));
 			if(towardstarget < 0.1 && towardstarget > -0.4
 	                    && desirabledamage > 0.1 * coredamage)
-			{
 				PHYS_INPUT_BUTTON_ATCK2(actor) = true;
-				PrintToChatAll(sprintf("target: %v", it.origin));
-				PrintToChatAll(sprintf("rocket: %v", rocket.origin));
-				PrintToChatAll(sprintf("forward: %v", v_forward));
-				PrintToChatAll(sprintf("normalized: %v", normalize(rocket.origin - it.origin)));
-				PrintToChatAll(sprintf("total: %v", (v_forward * normalize(rocket.origin - it.origin))));
-				PrintToChatAll(sprintf("total: %f", (v_forward * normalize(rocket.origin - it.origin))));
-			}
 	            });
 	        }
 	        else
