@@ -407,9 +407,12 @@ METHOD(Devastator, wr_aim, void(entity thiswep, entity actor, .entity weaponenti
 	            entity rocket = it;
 	            IL_EACH(g_bot_targets, it.bot_attack,
 	            {
-	            	if((v_forward * normalize(rocket.origin - it.origin) < 0.1)
-	                    && desirabledamage > 0.1 * coredamage
-	                    ) PHYS_INPUT_BUTTON_ATCK2(actor) = true;
+			// >0 rocket is flying towards the target, <0 away
+			// when flying towards this randomly spikes with -0.8 to -0.99??
+			float towardstarget = (v_forward * normalize(rocket.origin - it.origin));
+			if(towardstarget < 0.1 && towardstarget > -0.4
+	                    && desirabledamage > 0.1 * coredamage)
+				PHYS_INPUT_BUTTON_ATCK2(actor) = true;
 	            });
 	        }
 	        else
