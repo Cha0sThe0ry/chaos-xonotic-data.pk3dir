@@ -44,8 +44,20 @@
 
 void CSQC_Init()
 {
-	cvar_set("_scoreboard_team_selection_available", "1");
+	// make sure old clients have these aliases because server may request the execution of team_selection_show
+	// TODO remove in the next release
+	if (!(cvar_type("_scoreboard_team_selection_available") & CVAR_TYPEFLAG_EXISTS))
+	{
+		// can't use registercvar to make this cvar persistent
+		localcmd("seta _scoreboard_team_selection_available 0\n"); // default value 0
+		localcmd("alias _team_selection_show1 \"_scoreboard_team_selection 1\"\n");
+		localcmd("alias _team_selection_show0 menu_showteamselect\n");
+		localcmd("alias team_selection_show \"_team_selection_show$_scoreboard_team_selection_available\"\n");
+	}
+
+	localcmd("_scoreboard_team_selection_available 1\n");
 	cvar_set("_scoreboard_team_selection", "0"); // in case it has been left set to 1
+
 
 	prvm_language = strzone(cvar_string("prvm_language"));
 
