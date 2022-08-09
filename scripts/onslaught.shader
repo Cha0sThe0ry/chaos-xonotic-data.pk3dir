@@ -42,7 +42,8 @@ ons_gen_spark
  {
 	animmap 9 textures/generator_lightning.tga textures/generator_lightning2.tga
 	tcMod scroll 0.5 0
-	blendfunc add
+	blendfunc GL_SRC_ALPHA GL_ONE
+	rgbgen identityLighting
 
  }
 }

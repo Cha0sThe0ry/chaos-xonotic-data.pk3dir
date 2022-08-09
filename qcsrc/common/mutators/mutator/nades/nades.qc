@@ -673,19 +673,32 @@ void nade_heal_boom(entity this)
 	orb.colormod = '1 0 0';
 }
 
+MODEL(ELECTRICITY, "models/teamfx/electricity_effect.md3");
+
 void nade_monster_boom(entity this)
 {
 	if(!autocvar_g_monsters)
 		return;
 	entity e = spawn();
-	e.noalign = true; // don't drop to floor
-	e = spawnmonster(e, this.pokenade_type, MON_Null, this.realowner, this.realowner, this.origin, false, false, 1);
-	if(!e)
-		return; // monster failed to be spawned
+	bool active = true;
+	
+	if (active)
+	{
+		setorigin(e, this.origin);
+		setmodel(e, MDL_ELECTRICITY);
+		setsize(e, '-8 -8 -8', '8 8 8');
+	}
+	else
+	{
+		e.noalign = true; // don't drop to floor
+		e = spawnmonster(e, this.pokenade_type, MON_Null, this.realowner, this.realowner, this.origin, false, false, 1);
+		if(!e)
+			return; // monster failed to be spawned
 
-	if(autocvar_g_nades_pokenade_monster_lifetime > 0)
-		e.monster_lifetime = time + autocvar_g_nades_pokenade_monster_lifetime;
-	e.monster_skill = MONSTER_SKILL_INSANE;
+		if(autocvar_g_nades_pokenade_monster_lifetime > 0)
+			e.monster_lifetime = time + autocvar_g_nades_pokenade_monster_lifetime;
+		e.monster_skill = MONSTER_SKILL_INSANE;
+	}
 }
 
 void nade_veil_touch(entity this, entity toucher)
