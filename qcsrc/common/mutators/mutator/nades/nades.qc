@@ -673,7 +673,7 @@ void nade_heal_boom(entity this)
 	orb.colormod = '1 0 0';
 }
 
-MODEL(ELECTRICITY, "models/teamfx/electricity_effect.md3");
+MODEL(ELECTRICITY, "models/teamfx/electricityarcs_player.md3");
 
 void nade_monster_boom(entity this)
 {
