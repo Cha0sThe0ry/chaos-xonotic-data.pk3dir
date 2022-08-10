@@ -113,6 +113,46 @@ int forceplayermodels_goodmodelindex;
 
 .vector glowmod;
 
+.float spawn_electricity;
+
+void electricity_draw(entity this)
+{
+	if(time < this.move_time)
+		return;
+
+	this.move_time = time + 0.05;
+
+	if(this.count > 10)
+	{
+		IL_REMOVE(g_drawables, this);
+		delete(this);
+		return;
+	}
+
+	if(this.count > 5)
+		this.alpha -= 0.1;
+	else
+		this.alpha += 0.1;
+
+	this.scale -= 0.0005;
+	this.count += 1;
+}
+
+void electricity_spawn(entity this, vector org)
+{
+	entity e = new(electricity);
+	setmodel(e, MDL_ELECTRICITY);
+	setorigin(e, org);
+	e.angles = randomvec() * 360;
+	set_movetype(e, MOVETYPE_NONE);
+	e.alpha = 0;
+	e.scale = this.scale;
+	e.move_time = time + 0.05;
+	e.drawmask = MASK_NORMAL;
+	e.draw = electricity_draw;
+	IL_PUSH(g_drawables, e);
+}
+
 void CSQCPlayer_ModelAppearance_PreUpdate(entity this)
 {
 	this.model = this.forceplayermodels_savemodel;
@@ -562,6 +602,17 @@ void CSQCModel_Effects_Apply(entity this)
 	// ignoring EF_NOGUNBOB
 	if(eff & EF_FULLBRIGHT)
 		this.renderflags |= RF_FULLBRIGHT;
+	if(eff & EF_ELEC)
+	{
+		if (time > this.spawn_electricity)
+		{
+			this.spawn_electricity = time + 0.15;
+			electricity_spawn(this, this.origin);
+			sound(this, CH_PAIN, SND_ONS_SPARK1, VOL_BASE, ATTEN_NORM);
+		}
+		boxparticles(particleeffectnum(EFFECT_ARC_LIGHTNING), this, this.absmin, this.absmax, this.velocity, this.velocity, bound(0, frametime, 0.1), 0);
+		//pointparticles(EFFECT_ARC_LIGHTNING, this.origin, '0 0 0', bound(0, frametime, 0.1));
+	}
 	if(eff & EF_FLAME)
 	{
 		boxparticles(particleeffectnum(EFFECT_EF_FLAME), this, this.absmin, this.absmax, this.velocity, this.velocity, bound(0, frametime, 0.1), 0);

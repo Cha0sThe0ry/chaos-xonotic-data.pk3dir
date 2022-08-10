@@ -642,6 +642,7 @@ void GameCommand_effectindexdump(int request)
 			print_Effect_Index(d, "TE_LAVASPLASH");
 			print_Effect_Index(d, "TE_SMALLFLASH");
 			print_Effect_Index(d, "TE_FLAMEJET");
+			print_Effect_Index(d, "EF_ELEC");
 			print_Effect_Index(d, "EF_FLAME");
 			print_Effect_Index(d, "TE_BLOOD");
 			print_Effect_Index(d, "TE_SPARK");

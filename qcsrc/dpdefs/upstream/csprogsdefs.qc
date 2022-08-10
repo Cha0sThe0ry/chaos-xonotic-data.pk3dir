@@ -299,6 +299,7 @@ const float PFLAGS_FULLDYNAMIC				= 128;
 
 const float EF_ADDITIVE		= 32;
 const float EF_BLUE		= 64;
+const float EF_ELEC		= 256;
 const float EF_FLAME		= 1024;
 const float EF_FULLBRIGHT	= 512;
 const float EF_NODEPTHTEST	= 8192;
