@@ -122,7 +122,7 @@ float   EF_DYNAMICMODELLIGHT     = 131072;
 //idea: LegendGuard
 //darkplaces implementation: LegendGuard
 //effects bit:
-float   EF_ELEC        = 256;
+float   EF_ELEC        = 262144;
 //description:
 //entity emits electric rays
 
