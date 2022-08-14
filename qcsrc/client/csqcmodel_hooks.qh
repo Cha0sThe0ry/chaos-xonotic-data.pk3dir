@@ -46,6 +46,12 @@ const int MF_TRACER3 =  BIT(7);  // purple trail
 
 .int isplayermodel;
 
+.float spawn_electricity;
+
 void CSQCModel_Effects_Apply(entity this);
 
 void CSQCModel_Hook_PreDraw(entity this, bool isplayer);
+
+void electricity_draw(entity this);
+
+void electricity_spawn(entity this, vector org);

@@ -118,14 +118,6 @@ float   EF_DYNAMICMODELLIGHT     = 131072;
 //description:
 //force dynamic model light on the entity, even if it's a BSP model (or anything else with lightmaps or light colors)
 
-//DP_EF_ELEC
-//idea: LegendGuard
-//darkplaces implementation: LegendGuard
-//effects bit:
-float   EF_ELEC        = 262144;
-//description:
-//entity emits electric rays
-
 //DP_EF_FLAME
 //idea: LadyHavoc
 //darkplaces implementation: LadyHavoc
