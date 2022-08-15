@@ -113,32 +113,6 @@ int forceplayermodels_goodmodelindex;
 
 .vector glowmod;
 
-void electricity_draw(entity this)
-{
-	if(time < this.move_time)
-		return;
-
-	this.move_time = time + 0.05;
-
-	IL_REMOVE(g_drawables, this);
-	delete(this);
-}
-
-void electricity_spawn(entity this, vector org)
-{
-	entity e = new(electricity);
-	setmodel(e, MDL_ELECTRICITY);
-	setorigin(e, org);
-	e.angles = randomvec() * 360;
-	set_movetype(e, MOVETYPE_NONE);
-	e.alpha = 0;
-	e.scale = (this.isplayermodel) ? 0.35 : 0.675;
-	e.move_time = time + 0.05;
-	e.drawmask = MASK_NORMAL;
-	e.draw = electricity_draw;
-	IL_PUSH(g_drawables, e);
-}
-
 void CSQCPlayer_ModelAppearance_PreUpdate(entity this)
 {
 	this.model = this.forceplayermodels_savemodel;
@@ -595,12 +569,6 @@ void CSQCModel_Effects_Apply(entity this)
 	}
 	if(eff & EF_SHOCK)
 	{
-		if (time > this.spawn_electricity)
-		{
-			this.spawn_electricity = time + 0.15;
-			electricity_spawn(this, this.origin);
-			sound(this, CH_PAIN, SND_ONS_SPARK1, VOL_BASE, ATTEN_NORM);
-		}
 		boxparticles(particleeffectnum(EFFECT_ARC_LIGHTNING), this, this.absmin, this.absmax, this.velocity, this.velocity, bound(0, frametime, 0.1), 0);
 		//pointparticles(EFFECT_ARC_LIGHTNING, this.origin, '0 0 0', bound(0, frametime, 0.1));
 	}
