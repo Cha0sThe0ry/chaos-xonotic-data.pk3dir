@@ -539,14 +539,14 @@ METHOD(Disabled, m_tick, void(StatusEffects this, entity actor))
 {
 	if(time >= actor.disabled_effect_time)
 	{
-		StatusEffects_apply(STATUSEFFECT_Stunning, actor, time + 0.5, 0);
+		StatusEffects_apply(STATUSEFFECT_Stunned, actor, time + 0.5, 0);
 		actor.disabled_effect_time = time + 0.5;
 	}
 	SUPER(Disabled).m_tick(this, actor);
 }
 METHOD(Disabled, m_remove, void(StatusEffects this, entity actor, int removal_type))
 {
-	StatusEffects_remove(STATUSEFFECT_Stunning, actor, STATUSEFFECT_REMOVE_NORMAL);
+	StatusEffects_remove(STATUSEFFECT_Stunned, actor, STATUSEFFECT_REMOVE_NORMAL);
 	actor.disabled_effect_time = 0;
 	SUPER(Disabled).m_remove(this, actor, removal_type);
 }
