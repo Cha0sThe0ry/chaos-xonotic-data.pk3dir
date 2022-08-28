@@ -663,17 +663,24 @@ string Scoreboard_GetField(entity pl, PlayerScoreField field)
 			f = pl.ping;
 			if(f == 0)
 				return _("N/A");
-			const int PING_BEST = 40;
-			const int PING_MED = 90;
-			const int PING_HIGH = 150;
+			const int PING_BEST = 20;
+			const int PING_MED = 80;
+			const int PING_HIGH = 140;
+			const int PING_WORST = 200;
+			const vector COLOR_BEST = '0 1 0';
+			const vector COLOR_MED = '1 1 1';
+			const vector COLOR_HIGH = '1 0.5 0';
+			const vector COLOR_WORST = '1 0 0';
 			if(f < PING_BEST)
-				sbt_field_rgb = '0 1 0';
+				sbt_field_rgb = COLOR_BEST;
 			else if(f < PING_MED)
-				sbt_field_rgb = '0 1 0' + '1 -0.3 0' * ((f - PING_BEST) / (PING_MED - PING_BEST));
+				sbt_field_rgb = COLOR_BEST + (COLOR_MED - COLOR_BEST) * ((f - PING_BEST) / (PING_MED - PING_BEST));
 			else if(f < PING_HIGH)
-				sbt_field_rgb = '1 0.7 0' + '0 -0.7 0' * ((f - PING_MED) / (PING_HIGH - PING_MED));
+				sbt_field_rgb = COLOR_MED + (COLOR_HIGH - COLOR_MED) * ((f - PING_MED) / (PING_HIGH - PING_MED));
+			else if(f < PING_WORST)
+				sbt_field_rgb = COLOR_HIGH + (COLOR_WORST - COLOR_HIGH) * ((f - PING_HIGH) / (PING_WORST - PING_HIGH));
 			else
-				sbt_field_rgb = '1 0 0';
+				sbt_field_rgb = COLOR_WORST;
 			return ftos(f);
 
 		case SP_PL:
