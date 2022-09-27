@@ -19,8 +19,8 @@ void W_Rifle_FireBullet(Weapon thiswep, .entity weaponentity, float pSpread, flo
 	}
 
 	for(i = 0; i < pShots; ++i)
-		fireBullet_falloff(actor, weaponentity, w_shotorg, w_shotdir, pSpread, pSolidPenetration, pDamage, WEP_CVAR(rifle, damage_falloff_halflife), WEP_CVAR(rifle, damage_falloff_mindist), 
-						   WEP_CVAR(rifle, damage_falloff_maxdist), pHeadshotDamage, pForce, WEP_CVAR(rifle, damage_falloff_forcehalflife), deathtype, (pTracer ? EFFECT_RIFLE : EFFECT_RIFLE_WEAK), true);
+		fireBullet_falloff(actor, weaponentity, w_shotorg, w_shotdir, pSpread, pSolidPenetration, pDamage, WEP_CVAR(rifle, damagefalloff_halflife), WEP_CVAR(rifle, damagefalloff_mindist),
+			WEP_CVAR(rifle, damagefalloff_maxdist), pHeadshotDamage, pForce, WEP_CVAR(rifle, damagefalloff_forcehalflife), deathtype, (pTracer ? EFFECT_RIFLE : EFFECT_RIFLE_WEAK), true);
 
 	if(autocvar_g_casings >= 2)
 	{

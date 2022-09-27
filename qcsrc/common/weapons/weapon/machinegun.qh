@@ -27,10 +27,10 @@ CLASS(MachineGun, Weapon)
 		P(class, prefix, burst_refire2, float, NONE) \
 		P(class, prefix, burst_refire, float, NONE) \
 		P(class, prefix, burst_spread, float, NONE) \
-		P(class, prefix, damage_falloff_forcehalflife, float, NONE) \
-		P(class, prefix, damage_falloff_halflife, float, NONE) \
-		P(class, prefix, damage_falloff_maxdist, float, NONE) \
-		P(class, prefix, damage_falloff_mindist, float, NONE) \
+		P(class, prefix, damagefalloff_forcehalflife, float, NONE) \
+		P(class, prefix, damagefalloff_halflife, float, NONE) \
+		P(class, prefix, damagefalloff_maxdist, float, NONE) \
+		P(class, prefix, damagefalloff_mindist, float, NONE) \
 		P(class, prefix, first, float, NONE) \
 		P(class, prefix, first_ammo, float, NONE) \
 		P(class, prefix, first_damage, float, NONE) \

@@ -27,10 +27,10 @@ CLASS(Rifle, Weapon)
 		P(class, prefix, bullethail, float, BOTH) \
 		P(class, prefix, burstcost, float, BOTH) \
 		P(class, prefix, bursttime, float, NONE) \
-		P(class, prefix, damage_falloff_forcehalflife, float, NONE) \
-		P(class, prefix, damage_falloff_halflife, float, NONE) \
-		P(class, prefix, damage_falloff_maxdist, float, NONE) \
-		P(class, prefix, damage_falloff_mindist, float, NONE) \
+		P(class, prefix, damagefalloff_forcehalflife, float, NONE) \
+		P(class, prefix, damagefalloff_halflife, float, NONE) \
+		P(class, prefix, damagefalloff_maxdist, float, NONE) \
+		P(class, prefix, damagefalloff_mindist, float, NONE) \
 		P(class, prefix, damage, float, BOTH) \
 		P(class, prefix, force, float, BOTH) \
 		P(class, prefix, headshot_multiplier, float, BOTH) \
