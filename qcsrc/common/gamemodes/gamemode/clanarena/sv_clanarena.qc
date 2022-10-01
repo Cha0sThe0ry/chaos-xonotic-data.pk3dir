@@ -51,9 +51,7 @@ int CA_PreventStalemate()
 	int winnerTeam = 0;
 	int secondTeam = 0;
 
-	// change AvailableTeams() to AVAILABLE_TEAMS when this is merged to this branch
-	//  https://gitlab.com/xonotic/xonotic-data.pk3dir/-/merge_requests/1022/
-	for(int i = 1; i <= AvailableTeams(); i++)
+	for(int i = 1; i <= AVAILABLE_TEAMS; i++)
 	{
 		if(!winnerTeam || Team_GetNumberOfAlivePlayers(Team_GetTeamFromIndex(i)) > Team_GetNumberOfAlivePlayers(Team_GetTeam(winnerTeam)))
 		{
@@ -83,7 +81,7 @@ int CA_PreventStalemate()
 	int secondTeamHealth = 0;
 	int teamIndex, teamHealth;
 
-	for(int i = 1; i <= AvailableTeams(); i++)
+	for(int i = 1; i <= AVAILABLE_TEAMS; i++)
 	{
 		teamIndex = i;
 		teamHealth = 0;
