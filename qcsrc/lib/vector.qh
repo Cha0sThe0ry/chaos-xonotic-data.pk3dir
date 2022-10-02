@@ -197,3 +197,13 @@ vector NearestPointOnBoundingBox(vector mi, vector ma, vector org)
 	);
 }
 #endif
+
+// rounding bbox to nearest perfect float prevents obscure collision bugs like #2742
+#define PFLOAT (1/1024) // 1/32 1/64 etc also work
+#define RPFLOAT(a) (a=rint(a/PFLOAT)*PFLOAT)
+ERASEABLE
+vector RoundPerfectVector(vector v)
+{
+	RPFLOAT(v.x); RPFLOAT(v.y); RPFLOAT(v.z);
+	return v;
+}
