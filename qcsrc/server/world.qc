@@ -35,7 +35,6 @@
 #include <server/damage.qh>
 #include <server/gamelog.qh>
 #include <server/hook.qh>
-#include <server/intermission.qh>
 #include <server/ipban.qh>
 #include <server/items/items.qh>
 #include <server/main.qh>
@@ -46,7 +45,6 @@
 #include <server/scores_rules.qh>
 #include <server/spawnpoints.qh>
 #include <server/teamplay.qh>
-#include <server/weapons/common.qh>
 #include <server/weapons/weaponstats.qh>
 
 const float LATENCY_THINKRATE = 10;
@@ -279,7 +277,6 @@ void cvar_changes_init()
 		BADCVAR("g_duel_not_dm_maps");
 		BADCVAR("g_freezetag");
 		BADCVAR("g_freezetag_teams");
-		BADCVAR("g_invasion_teams");
 		BADCVAR("g_invasion_type");
 		BADCVAR("g_jailbreak");
 		BADCVAR("g_jailbreak_teams");
@@ -319,6 +316,7 @@ void cvar_changes_init()
 		BADCVAR("g_maplist");
 		BADCVAR("g_maplist_mostrecent");
 		BADCVAR("sv_motd");
+		BADCVAR("sv_termsofservice_url");
 
 		v = cvar_string(k);
 		d = cvar_defstring(k);
@@ -340,7 +338,6 @@ void cvar_changes_init()
 		// does nothing gameplay relevant
 		BADCVAR("captureleadlimit_override");
 		BADCVAR("condump_stripcolors");
-		BADCVAR("gameversion");
 		BADCVAR("fs_gamedir");
 		BADCVAR("g_allow_oldvortexbeam");
 		BADCVAR("g_balance_kill_delay");
@@ -411,7 +408,7 @@ void cvar_changes_init()
 		BADCVAR("w_prop_interval");
 		BADPREFIX("chat_");
 		BADPREFIX("crypto_");
-		BADPREFIX("gameversion_");
+		BADPREFIX("gameversion");
 		BADPREFIX("g_chat_");
 		BADPREFIX("g_ctf_captimerecord_");
 		BADPREFIX("g_hats_");
@@ -430,6 +427,7 @@ void cvar_changes_init()
 		BADPREFIX("sv_timeout_");
 		BADPREFIX("sv_vote_");
 		BADPREFIX("timelimit_");
+		BADPRESUFFIX("g_", "_round_timelimit");
 
 		// allowed changes to server admins (please sync this to server.cfg)
 		// vi commands:
@@ -486,7 +484,6 @@ void cvar_changes_init()
 		BADCVAR("g_tdm_teams_override");
 		BADCVAR("g_tmayhem_teams_override");
 		BADCVAR("g_tmayhem_powerups");
-		BADCVAR("g_warmup");
 		BADCVAR("g_weapon_stay"); BADPRESUFFIX("g_", "_weapon_stay");
 		BADCVAR("hostname");
 		BADCVAR("log_file");
@@ -512,6 +509,7 @@ void cvar_changes_init()
 		BADCVAR("sv_motd");
 		BADCVAR("sv_public");
 		BADCVAR("sv_showfps");
+		BADCVAR("sv_showspectators");
 		BADCVAR("sv_status_privacy");
 		BADCVAR("sv_taunt");
 		BADCVAR("sv_vote_call");
@@ -525,7 +523,7 @@ void cvar_changes_init()
 		BADVALUE("sys_ticrate", "0.0333333");
 		BADCVAR("teamplay_mode");
 		BADCVAR("timelimit_override");
-		BADPREFIX("g_warmup_");
+		BADPREFIX("g_warmup");
 		BADPREFIX("sv_info_");
 		BADPREFIX("sv_ready_restart_");
 
@@ -652,8 +650,42 @@ STATIC_INIT_EARLY(maxclients)
 
 void GameplayMode_DelayedInit(entity this)
 {
+	// at this stage team entities are spawned, teamplay contains the number of them
+
 	if(!scores_initialized)
 		ScoreRules_generic();
+
+	if (warmup_stage >= 0 && autocvar_g_maxplayers >= 0)
+		return;
+	if (!g_duel)
+		MapReadSizes(mapname);
+
+	if (autocvar_g_maxplayers < 0 && teamplay)
+	{
+		// automatic maxplayers should be a multiple of team count
+		if (map_maxplayers == 0 || map_maxplayers > maxclients)
+			map_maxplayers = maxclients; // unlimited, but may need rounding
+		int d = map_maxplayers % AVAILABLE_TEAMS;
+		int u = AVAILABLE_TEAMS - d;
+		map_maxplayers += (u <= d && u + map_maxplayers <= maxclients) ? u : -d;
+	}
+
+	if (warmup_stage < 0)
+	{
+		int m = GetPlayerLimit();
+		if (m <= 0) m = maxclients;
+		map_minplayers = bound(max(2, AVAILABLE_TEAMS * 2), map_minplayers, m);
+		if (teamplay)
+		{
+			// automatic minplayers should be a multiple of team count
+			int d = map_minplayers % AVAILABLE_TEAMS;
+			int u = AVAILABLE_TEAMS - d;
+			map_minplayers += (u < d && u + map_minplayers <= m) ? u : -d;
+		}
+		warmup_limit = -1;
+	}
+	else
+		map_minplayers = 0; // don't display a minimum if it's not used
 }
 
 void InitGameplayMode()
@@ -706,6 +738,7 @@ void InitGameplayMode()
 bool world_already_spawned;
 spawnfunc(worldspawn)
 {
+	cvar_set("_endmatch", "0");
 	server_is_dedicated = boolean(stof(cvar_defstring("is_dedicated")));
 
 	if (autocvar_sv_termsofservice_url && autocvar_sv_termsofservice_url != "")
@@ -839,10 +872,10 @@ spawnfunc(worldspawn)
 
 	if(autocvar_g_campaign)
 		CampaignPreInit();
+	else
+		PlayerStats_GameReport_Init(); // we need this to be initiated before InitGameplayMode
 
 	Map_MarkAsRecent(mapname);
-
-	PlayerStats_GameReport_Init(); // we need this to be initiated before InitGameplayMode
 
 	InitGameplayMode();
 	static_init_late();
@@ -852,7 +885,7 @@ spawnfunc(worldspawn)
 	GameRules_limit_fallbacks();
 
 	if(warmup_limit == 0)
-		warmup_limit = (autocvar_timelimit > 0) ? autocvar_timelimit * 60 : autocvar_timelimit;
+		warmup_limit = autocvar_timelimit * 60;
 
 	player_count = 0;
 	bot_waypoints_for_items = autocvar_g_waypoints_for_items;
@@ -862,46 +895,15 @@ spawnfunc(worldspawn)
 
 	WaypointSprite_Init();
 
-	GameLogInit(); // prepare everything
 	// NOTE for matchid:
 	// changing the logic generating it is okay. But:
 	// it HAS to stay <= 64 chars
 	// character set: ASCII 33-126 without the following characters: : ; ' " \ $
+	// strftime(false, "%s") isn't reliable, see strftime_s description
+	matchid = strzone(sprintf("%d.%s.%06d", autocvar_sv_eventlog_files_counter, strftime_s(), random() * 1000000));
+
 	if(autocvar_sv_eventlog)
-	{
-		string num = strftime_s(); // strftime(false, "%s") isn't reliable, see strftime_s description
-		string s = sprintf("%s.%s.%06d", itos(autocvar_sv_eventlog_files_counter), num, floor(random() * 1000000));
-		matchid = strzone(s);
-
-		GameLogEcho(strcat(":gamestart:", GetGametype(), "_", GetMapname(), ":", s));
-		s = ":gameinfo:mutators:LIST";
-
-		MUTATOR_CALLHOOK(BuildMutatorsString, s);
-		s = M_ARGV(0, string);
-
-		// initialiation stuff, not good in the mutator system
-		if(!autocvar_g_use_ammunition)
-			s = strcat(s, ":no_use_ammunition");
-
-		// initialiation stuff, not good in the mutator system
-		if(autocvar_g_pickup_items == 0)
-			s = strcat(s, ":no_pickup_items");
-		if(autocvar_g_pickup_items > 0)
-			s = strcat(s, ":pickup_items");
-
-		// initialiation stuff, not good in the mutator system
-		if(autocvar_g_weaponarena != "0")
-			s = strcat(s, ":", autocvar_g_weaponarena, " arena");
-
-		// TODO to mutator system
-		if(autocvar_g_norecoil)
-			s = strcat(s, ":norecoil");
-
-		GameLogEcho(s);
-		GameLogEcho(":gameinfo:end");
-	}
-	else
-		matchid = strzone(ftos(random()));
+		GameLogInit(); // requires matchid to be set
 
 	cvar_set("nextmap", "");
 
@@ -1051,7 +1053,7 @@ spawnfunc(light)
 	delete(this);
 }
 
-bool MoveToRandomLocationWithinBounds(entity e, vector boundmin, vector boundmax, float goodcontents, float badcontents, float badsurfaceflags, int attempts, float maxaboveground, float minviewdistance)
+bool MoveToRandomLocationWithinBounds(entity e, vector boundmin, vector boundmax, float goodcontents, float badcontents, float badsurfaceflags, int attempts, float maxaboveground, float minviewdistance, bool frompos)
 {
     float m = e.dphitcontentsmask;
     e.dphitcontentsmask = goodcontents | badcontents;
@@ -1108,15 +1110,23 @@ bool MoveToRandomLocationWithinBounds(entity e, vector boundmin, vector boundmax
             continue;
 
 		// rule 4: we must "see" some spawnpoint or item
-	    entity sp = NULL;
-	    IL_EACH(g_spawnpoints, checkpvs(mstart, it),
-	    {
-	    	if((traceline(mstart, it.origin, MOVE_NORMAL, e), trace_fraction) >= 1)
-	    	{
-	    		sp = it;
-	    		break;
-	    	}
-	    });
+		entity sp = NULL;
+		if(frompos)
+		{
+			if((traceline(mstart, e.origin, MOVE_NORMAL, e), trace_fraction) >= 1)
+				sp = e;
+		}
+		if(!sp)
+		{
+			IL_EACH(g_spawnpoints, checkpvs(mstart, it),
+			{
+				if((traceline(mstart, it.origin, MOVE_NORMAL, e), trace_fraction) >= 1)
+				{
+					sp = it;
+					break;
+				}
+			});
+		}
 		if(!sp)
 		{
 			int items_checked = 0;
@@ -1175,7 +1185,7 @@ bool MoveToRandomLocationWithinBounds(entity e, vector boundmin, vector boundmax
 
 float MoveToRandomMapLocation(entity e, float goodcontents, float badcontents, float badsurfaceflags, float attempts, float maxaboveground, float minviewdistance)
 {
-	return MoveToRandomLocationWithinBounds(e, world.mins, world.maxs, goodcontents, badcontents, badsurfaceflags, attempts, maxaboveground, minviewdistance);
+	return MoveToRandomLocationWithinBounds(e, world.mins, world.maxs, goodcontents, badcontents, badsurfaceflags, attempts, maxaboveground, minviewdistance, false);
 }
 
 /*
@@ -1353,7 +1363,7 @@ void NextLevel()
 }
 
 
-float InitiateSuddenDeath()
+int InitiateSuddenDeath()
 {
 	// Check first whether normal overtimes could be added before initiating suddendeath mode
 	// - for this timelimit_overtime needs to be >0 of course
@@ -1649,8 +1659,8 @@ void CheckRules_World()
 	if(timelimit > 0)
 		timelimit += game_starttime;
 
-	float wantovertime;
-	wantovertime = 0;
+	int overtimes_prev = overtimes;
+	int wantovertime = 0;
 
 	if(checkrules_suddendeathend)
 	{
@@ -1736,6 +1746,12 @@ void CheckRules_World()
 
 	if(checkrules_status == WINNING_YES)
 	{
+		if (overtimes == -1 && overtimes != overtimes_prev)
+		{
+			// if suddendeathend overtime has just begun, revert it
+			checkrules_suddendeathend = 0;
+			overtimes = overtimes_prev;
+		}
 		//print("WINNING\n");
 		NextLevel();
 	}
@@ -1897,25 +1913,25 @@ void readplayerstartcvars()
 	else if (s == "all" || s == "1")
 	{
 		g_weaponarena = 1;
-		g_weaponarena_list = "All Weapons";
+		g_weaponarena_list = "All Weapons Arena";
 		g_weaponarena_weapons = weapons_all();
 	}
 	else if (s == "devall")
 	{
 		g_weaponarena = 1;
-		g_weaponarena_list = "Dev All Weapons";
+		g_weaponarena_list = "Dev All Weapons Arena";
 		g_weaponarena_weapons = weapons_devall();
 	}
 	else if (s == "most")
 	{
 		g_weaponarena = 1;
-		g_weaponarena_list = "Most Weapons";
+		g_weaponarena_list = "Most Weapons Arena";
 		g_weaponarena_weapons = weapons_most();
 	}
 	else if (s == "all_available")
 	{
 		g_weaponarena = 1;
-		g_weaponarena_list = "All Available Weapons";
+		g_weaponarena_list = "All Available Weapons Arena";
 
 		// this needs to run after weaponsInMapAll is initialized
 		InitializeEntity(NULL, weaponarena_available_all_update, INITPRIO_FINDTARGET);
@@ -1923,7 +1939,7 @@ void readplayerstartcvars()
 	else if (s == "devall_available")
 	{
 		g_weaponarena = 1;
-		g_weaponarena_list = "Dev All Available Weapons";
+		g_weaponarena_list = "Dev All Available Weapons Arena";
 
 		// this needs to run after weaponsInMapAll is initialized
 		InitializeEntity(NULL, weaponarena_available_devall_update, INITPRIO_FINDTARGET);
@@ -1931,7 +1947,7 @@ void readplayerstartcvars()
 	else if (s == "most_available")
 	{
 		g_weaponarena = 1;
-		g_weaponarena_list = "Most Available Weapons";
+		g_weaponarena_list = "Most Available Weapons Arena";
 
 		// this needs to run after weaponsInMapAll is initialized
 		InitializeEntity(NULL, weaponarena_available_most_update, INITPRIO_FINDTARGET);
@@ -1939,7 +1955,7 @@ void readplayerstartcvars()
 	else if (s == "none")
 	{
 		g_weaponarena = 1;
-		g_weaponarena_list = "No Weapons";
+		g_weaponarena_list = "No Weapons Arena";
 	}
 	else
 	{
@@ -1953,10 +1969,13 @@ void readplayerstartcvars()
 			if(wep != WEP_Null)
 			{
 				g_weaponarena_weapons |= (wep.m_wepset);
-				g_weaponarena_list = strcat(g_weaponarena_list, wep.m_name, " & ");
+				g_weaponarena_list = strcat(g_weaponarena_list, wep.netname, " & ");
 			}
 		}
-		g_weaponarena_list = strzone(substring(g_weaponarena_list, 0, strlen(g_weaponarena_list) - 3));
+		if (g_weaponarena_list != "") // remove trailing " & "
+			g_weaponarena_list = substring(g_weaponarena_list, 0, strlen(g_weaponarena_list) - 3);
+		else // no valid weapon found
+			g_weaponarena_list = "No Weapons Arena";
 	}
 
 	if (g_weaponarena)
@@ -1964,6 +1983,7 @@ void readplayerstartcvars()
 		g_weapon_stay = 0; // incompatible
 		start_weapons = g_weaponarena_weapons;
 		start_items |= IT_UNLIMITED_AMMO | IT_UNLIMITED_SUPERWEAPONS;
+		g_weaponarena_list = strzone(g_weaponarena_list);
 	}
 	else
 	{
@@ -2154,7 +2174,7 @@ void readlevelcvars()
 
     MUTATOR_CALLHOOK(ReadLevelCvars);
 
-	if (!warmup_stage)
+	if (!warmup_stage && !autocvar_g_campaign)
 		game_starttime = time + cvar("g_start_delay");
 
 	FOREACH(Weapons, it != WEP_Null, { it.wr_init(it); });
