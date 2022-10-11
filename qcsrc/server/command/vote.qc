@@ -536,6 +536,8 @@ void ReadyCount()
 			warmup_stage = autocvar_g_warmup; // CAN change it AFTER calling Nagger_ReadyCounted() this frame
 			game_starttime = time;
 			Send_Notification(NOTIF_ALL, NULL, MSG_MULTI, COUNTDOWN_STOP, minplayers);
+			if (!sv_ready_restart_after_countdown) // if we ran reset_map() at start of countdown
+				reset_map(true, true); // then give players all the weapons again in the "resumed" warmup
 		}
 		if (warmup_limit > 0)
 			warmup_limit = -1;
