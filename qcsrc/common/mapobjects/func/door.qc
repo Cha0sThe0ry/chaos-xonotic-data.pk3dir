@@ -28,6 +28,7 @@ void door_go_up(entity this, entity actor, entity trigger);
 void door_blocked(entity this, entity blocker)
 {
 	if((this.spawnflags & DOOR_CRUSH)
+		&& !Q3COMPAT_COMMON
 #ifdef SVQC
 		&& (blocker.takedamage != DAMAGE_NO)
 #elif defined(CSQC)
@@ -52,6 +53,7 @@ void door_blocked(entity this, entity blocker)
 			&& blocker.takedamage != DAMAGE_NO
 #endif
 			&& this.wait >= 0
+			&& !(Q3COMPAT_COMMON && this.spawnflags & Q3_DOOR_CRUSHER)
 		)
 		{
 			if (this.state == STATE_DOWN)
