@@ -38,3 +38,10 @@ const int ACTIVE_ACTIVE = 1;
 const int ACTIVE_IDLE = 2;
 const int ACTIVE_BUSY = 2;
 const int ACTIVE_TOGGLE = 3;
+
+
+#ifdef SVQC
+	#define Q3COMPAT_COMMON q3compat
+#elif defined(CSQC)
+	#define Q3COMPAT_COMMON STAT(Q3COMPAT)
+#endif
