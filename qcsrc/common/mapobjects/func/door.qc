@@ -51,33 +51,28 @@ void door_blocked(entity this, entity blocker)
 #ifdef SVQC
 			&& blocker.takedamage != DAMAGE_NO
 #endif
+			&& this.wait >= 0
 		)
 		{
-			if (this.wait >= 0)
+			if (this.state == STATE_DOWN)
 			{
-				if (this.state == STATE_DOWN)
-				{
-					if (this.classname == "door")
-						door_go_up(this, NULL, NULL);
-					else
-						door_rotating_go_up(this, blocker);
-				}
+				if (this.classname == "door")
+					door_go_up(this, NULL, NULL);
 				else
-				{
-					if (this.classname == "door")
-						door_go_down(this);
-					else
-						door_rotating_go_down(this);
-				}
+					door_rotating_go_up(this, blocker);
+			}
+			else
+			{
+				if (this.classname == "door")
+					door_go_down(this);
+				else
+					door_rotating_go_down(this);
 			}
 		}
 #ifdef SVQC
-		else
-		{
-			//gib dying stuff just to make sure
-			if((this.dmg) && (blocker.takedamage != DAMAGE_NO))    // Shall we bite?
-				Damage (blocker, this, this, 10000, DEATH_HURTTRIGGER.m_id, DMG_NOWEP, blocker.origin, '0 0 0');
-		}
+		//gib dying stuff just to make sure
+		else if((this.dmg) && IS_DEAD(blocker) && blocker.takedamage != DAMAGE_NO)    // Shall we bite?
+			Damage (blocker, this, this, 10000, DEATH_HURTTRIGGER.m_id, DMG_NOWEP, blocker.origin, '0 0 0');
 #endif
 	}
 }
