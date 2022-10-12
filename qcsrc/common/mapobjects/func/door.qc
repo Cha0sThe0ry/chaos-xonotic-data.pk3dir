@@ -46,10 +46,10 @@ void door_blocked(entity this, entity blocker)
 			Damage (blocker, this, this, this.dmg, DEATH_HURTTRIGGER.m_id, DMG_NOWEP, blocker.origin, '0 0 0');
 #endif
 
-		 // don't change direction for dead or dying stuff
-		if(IS_DEAD(blocker)
+		// don't change direction for dead or dying stuff
+		if(!IS_DEAD(blocker)
 #ifdef SVQC
-			&& (blocker.takedamage == DAMAGE_NO)
+			&& blocker.takedamage != DAMAGE_NO
 #endif
 		)
 		{
