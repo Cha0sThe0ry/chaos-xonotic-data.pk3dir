@@ -832,6 +832,13 @@ void ctf_CheckFlagReturn(entity flag, int returntype)
 				case RETURN_TIMEOUT:
 					Send_Notification(NOTIF_ALL, NULL, MSG_INFO, APP_NUM(flag.team, INFO_CTF_FLAGRETURN_TIMEOUT)); break;
 			}
+			FOREACH_CLIENT(IS_PLAYER(it), {
+				if(it.team == flag.team)
+					Send_Notification(NOTIF_ONE_ONLY, it, MSG_ANNCE, ANNCE_CTF_RETURN_TEAM);
+				else
+					Send_Notification(NOTIF_ONE_ONLY, it, MSG_ANNCE, ANNCE_CTF_RETURN_ENEMY);
+			});
+			Send_Notification(NOTIF_ALL_SPEC, NULL, MSG_ANNCE, APP_TEAM_NUM(flag.team, ANNCE_CTF_RETURN));
 			_sound(flag, CH_TRIGGER, flag.snd_flag_respawn, VOL_BASE, ATTEN_NONE);
 			ctf_EventLog("returned", flag.team, NULL);
 			flag.enemy = NULL;
