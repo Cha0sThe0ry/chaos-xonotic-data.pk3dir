@@ -614,7 +614,7 @@ void ctf_Handle_Capture(entity flag, entity toucher, int capturetype)
 
 	// Scores announcer
 	// TODO : This should call a function and announce which team is leading if the leader announcing code is merged.
-	Send_Notification(NOTIF_ALL, NULL, MSG_ANNCE, APP_TEAM_NUM(tm, ANNCE_TEAM_SCORES));
+	Send_Notification(NOTIF_ALL, NULL, MSG_ANNCE, APP_TEAM_NUM(player.team, ANNCE_TEAM_SCORES));
 
 	// effects
 	Send_Effect_(flag.capeffect, flag.origin, '0 0 0', 1);
