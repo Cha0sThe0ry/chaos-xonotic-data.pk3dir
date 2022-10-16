@@ -516,9 +516,9 @@ void ReadyCount()
 	float t_players = 0;
 	readycount = 0;
 
-	FOREACH_CLIENT(IS_REAL_CLIENT(it) && (IS_PLAYER(it) || INGAME_JOINED(it)), {
+	FOREACH_CLIENT(IS_PLAYER(it) || INGAME_JOINED(it), {
 		++t_players;
-		if (it.ready) ++readycount;
+		if (it.ready || IS_BOT_CLIENT(it)) ++readycount;
 	});
 
 	Nagger_ReadyCounted();
