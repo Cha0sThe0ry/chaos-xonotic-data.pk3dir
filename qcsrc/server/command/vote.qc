@@ -513,7 +513,6 @@ void ReadyCount()
 	// cannot reset the game while a timeout is active or pending
 	if (timeout_status) return;
 
-	float ready_needed_factor, ready_needed_count;
 	float t_players = 0;
 	readycount = 0;
 
@@ -555,10 +554,8 @@ void ReadyCount()
 		// warmup continues until enough players AND enough RUPs (no time limit)
 	}
 
-	ready_needed_factor = bound(0.5, cvar("g_warmup_majority_factor"), 1);
-	ready_needed_count = ceil(t_players * ready_needed_factor);
-
-	if (readycount >= ready_needed_count) ReadyRestart(true);
+	if (readycount >= ceil(t_players * bound(0.5, cvar("g_warmup_majority_factor"), 1)))
+		ReadyRestart(true);
 }
 
 
