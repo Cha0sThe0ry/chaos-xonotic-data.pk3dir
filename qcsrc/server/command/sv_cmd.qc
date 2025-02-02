@@ -1772,7 +1772,7 @@ void GameCommand_warp(int request, int argc)
 	}
 }
 
-void IRCSay(string msgstr)
+void IRCSayCust(string msgstr)
 {
 	if(msgstr == "")
 		return;
@@ -1798,7 +1798,7 @@ void IRCSay(string msgstr)
 
 void GameCommand_ircmsg(int request, int argc, string command)
 {
-	IRCSay(substring(command, strlen(argv(0))+1, strlen(command)));
+	IRCSayCust(substring(command, strlen(argv(0))+1, strlen(command)));
         return;
 }
 
