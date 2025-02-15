@@ -86,7 +86,7 @@ STATIC_INIT(g_railgunhit) { g_railgunhit = IL_NEW(); }
 
 .float railgundistance;
 .vector railgunforce;
-void FireRailgunBullet (entity this, .entity weaponentity, vector start, vector end, float bdamage, bool headshot_notify, float bforce, float mindist, float maxdist, float halflifedist, float forcehalflifedist, int deathtype);
+void FireRailgunBullet (entity this, .entity weaponentity, vector start, vector end, float bdamage, bool headshot_notify, float bforce, float mindist, float maxdist, float halflifedist, float forcehalflifedist, int deathtype, int damagefalloff_mode);
 
 entity fireBullet_trace_callback_eff;
 entity fireBullet_last_hit;

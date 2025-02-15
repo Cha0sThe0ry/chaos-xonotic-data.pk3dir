@@ -427,14 +427,24 @@ void W_Arc_Beam_Think(entity this)
 			// NO. trace_endpos should be just fine. If not,
 			// that's an engine bug that needs proper debugging.
 			vector hitorigin = trace_endpos;
-
-			float falloff = ExponentialFalloff(
-				WEP_CVAR(WEP_ARC, beam_falloff_mindist),
-				WEP_CVAR(WEP_ARC, beam_falloff_maxdist),
-				WEP_CVAR(WEP_ARC, beam_falloff_halflifedist),
-				vlen(WarpZone_UnTransformOrigin(WarpZone_trace_transform, hitorigin) - w_shotorg)
-			);
-
+			float damagefalloff_mode = WEP_CVAR(WEP_ARC, beam_damagefalloff_mode);
+			float falloff = 1.0;
+			if (damagefalloff_mode == 1)
+			{
+				falloff = LinearFalloff(
+					WEP_CVAR(WEP_ARC, beam_falloff_mindist),
+					WEP_CVAR(WEP_ARC, beam_falloff_maxdist),
+					WEP_CVAR(WEP_ARC, beam_falloff_halflifedist),
+					vlen(WarpZone_UnTransformOrigin(WarpZone_trace_transform, hitorigin) - w_shotorg));
+			}
+			else if (damagefalloff_mode == 2)
+			{
+				falloff = ExponentialFalloff(
+					WEP_CVAR(WEP_ARC, beam_falloff_mindist),
+					WEP_CVAR(WEP_ARC, beam_falloff_maxdist),
+					WEP_CVAR(WEP_ARC, beam_falloff_halflifedist),
+					vlen(WarpZone_UnTransformOrigin(WarpZone_trace_transform, hitorigin) - w_shotorg));
+			}
 			float rootdamage;
 			if(is_player)
 			{

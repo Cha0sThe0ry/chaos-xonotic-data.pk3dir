@@ -10,6 +10,7 @@ void W_Rifle_FireBullet(Weapon thiswep, .entity weaponentity, int deathtype, Sou
 	float pDF_ForceHalfLife = WEP_CVAR_BOTH(WEP_RIFLE, isprimary, damagefalloff_forcehalflife);
 	float pDF_MaxDist = WEP_CVAR_BOTH(WEP_RIFLE, isprimary, damagefalloff_maxdist);
 	float pDF_MinDist = WEP_CVAR_BOTH(WEP_RIFLE, isprimary, damagefalloff_mindist);
+	float pDF_falloffMode = WEP_CVAR_BOTH(WEP_RIFLE, isprimary, damagefalloff_mode);
 	float pForce = WEP_CVAR_BOTH(WEP_RIFLE, isprimary, force);
 	float pHeadshotDamage = WEP_CVAR_BOTH(WEP_RIFLE, isprimary, headshot_multiplier);
 	float pShots = WEP_CVAR_BOTH(WEP_RIFLE, isprimary, shots);
@@ -30,10 +31,11 @@ void W_Rifle_FireBullet(Weapon thiswep, .entity weaponentity, int deathtype, Sou
 	}
 
 	for(int i = 0; i < pShots; ++i)
-		fireBullet_falloff(actor, weaponentity, w_shotorg, w_shotdir, pSpread,
+		fireBullet_falloff(
+			actor, weaponentity, w_shotorg, w_shotdir, pSpread,
 			pSolidPenetration, pDamage, pDF_HalfLife, pDF_MinDist,
 			pDF_MaxDist, pHeadshotDamage, pForce, pDF_ForceHalfLife,
-			deathtype, (pTracer ? EFFECT_RIFLE : EFFECT_RIFLE_WEAK), true);
+			deathtype, (pTracer ? EFFECT_RIFLE : EFFECT_RIFLE_WEAK), true, pDF_falloffMode);
 
 	if(autocvar_g_casings >= 2)
 	{

@@ -235,7 +235,7 @@ bool Headshot(entity targ, entity ent, vector start, vector end)
 	return trace_hits_box(start, end, headmins, headmaxs);
 }
 
-void FireRailgunBullet (entity this, .entity weaponentity, vector start, vector end, float bdamage, bool headshot_notify, float bforce, float mindist, float maxdist, float halflifedist, float forcehalflifedist, int deathtype)
+void FireRailgunBullet (entity this, .entity weaponentity, vector start, vector end, float bdamage, bool headshot_notify, float bforce, float mindist, float maxdist, float halflifedist, float forcehalflifedist, int deathtype, int damagefalloff_mode)
 {
 	vector dir = normalize(end - start);
 	vector force = dir * bforce;
@@ -322,9 +322,18 @@ void FireRailgunBullet (entity this, .entity weaponentity, vector start, vector 
 	IL_EACH(g_railgunhit, it.railgunhit,
 	{
 		// removal from the list is handled below
+		float foff = 1.0;
+		float ffs = 1.0;
 
-		float foff = ExponentialFalloff(mindist, maxdist, halflifedist, it.railgundistance);
-		float ffs = ExponentialFalloff(mindist, maxdist, forcehalflifedist, it.railgundistance);
+		if (damagefalloff_mode == 1)
+		{
+			foff = LinearFalloff(mindist, maxdist, halflifedist, it.railgundistance);
+			ffs = LinearFalloff(mindist, maxdist, forcehalflifedist, it.railgundistance);
+		}
+		else if (damagefalloff_mode == 2) {
+			foff = ExponentialFalloff(mindist, maxdist, halflifedist, it.railgundistance);
+			ffs = ExponentialFalloff(mindist, maxdist, forcehalflifedist, it.railgundistance);
+		}
 
 		if(accuracy_isgooddamage(this, it))
 			totaldmg += bdamage * foff;
@@ -366,7 +375,7 @@ void fireBullet_falloff(entity this, .entity weaponentity, vector start, vector 
                         float falloff_halflife, float falloff_mindist,
                         float falloff_maxdist, float headshot_multiplier,
                         float force, float falloff_forcehalflife,
-                        float dtype, entity tracer_effect, bool do_antilag)
+                        float dtype, entity tracer_effect, bool do_antilag, int damagefalloff_mode)
 {
 	dir = normalize(dir + randomvec() * spread);
 	vector end = start + dir * max_shot_distance;
@@ -449,7 +458,13 @@ void fireBullet_falloff(entity this, .entity weaponentity, vector start, vector 
 			float dealt_damage = damage * damage_fraction;
 			vector dealt_force = force * dir * damage_fraction;
 
-			if (falloff_halflife || falloff_forcehalflife)
+			if (damagefalloff_mode == 1)
+			{
+				float dist = vlen(WarpZone_UnTransformOrigin(WarpZone_trace_transform, hit.origin) - this.origin);
+				dealt_damage *= LinearFalloff(falloff_mindist, falloff_maxdist, falloff_halflife,      dist);
+				dealt_force  *= LinearFalloff(falloff_mindist, falloff_maxdist, falloff_forcehalflife, dist);
+			}
+			else if ((damagefalloff_mode == 2) && (falloff_halflife || falloff_forcehalflife))
 			{
 				// start, end and trace_endpos seem unreliable for
 				// falloff calculations, using `entity.origin`s instead.
@@ -538,7 +553,7 @@ void fireBullet_falloff(entity this, .entity weaponentity, vector start, vector 
 
 void fireBullet_antilag(entity this, .entity weaponentity, vector start, vector dir, float spread, float max_solid_penetration, float damage, float headshot_multiplier, float force, float dtype, entity tracer_effect, bool do_antilag)
 {
-	fireBullet_falloff(this, weaponentity, start, dir, spread, max_solid_penetration, damage, 0, 0, 0, headshot_multiplier, force, 0, dtype, tracer_effect, do_antilag);
+	fireBullet_falloff(this, weaponentity, start, dir, spread, max_solid_penetration, damage, 0, 0, 0, headshot_multiplier, force, 0, dtype, tracer_effect, do_antilag, 0);
 }
 
 void fireBullet(entity this, .entity weaponentity, vector start, vector dir, float spread, float max_solid_penetration, float damage, float headshot_multiplier, float force, float dtype, entity tracer_effect)
