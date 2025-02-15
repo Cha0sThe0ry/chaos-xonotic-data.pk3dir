@@ -38,6 +38,7 @@ CLASS(OverkillMachineGun, Weapon)
 		P(class, prefix, spread_max, float, PRI) \
 		P(class, prefix, spread_min, float, PRI) \
 		P(class, prefix, refire_type, float, SEC) \
+    P(class, prefix, damagefalloff_mode, float,NONE) \
 		P(class, prefix, damagefalloff_forcehalflife, float, NONE) \
 		P(class, prefix, damagefalloff_halflife, float, NONE) \
 		P(class, prefix, damagefalloff_maxdist, float, NONE) \

@@ -57,11 +57,13 @@ MUTATOR_HOOKFUNCTION(oknex_charge, GetPressedKeys)
 void W_OverkillNex_Attack(Weapon thiswep, entity actor, .entity weaponentity, float issecondary)
 {
 	float mydmg, myforce, mymindist, mymaxdist, myhalflife, myforcehalflife, myammo, charge;
+	int mydamagefalloff_mode;
 
 	mydmg = WEP_CVAR_BOTH(WEP_OVERKILL_NEX, !issecondary, damage);
 	myforce = WEP_CVAR_BOTH(WEP_OVERKILL_NEX, !issecondary, force);
 	mymindist = WEP_CVAR_BOTH(WEP_OVERKILL_NEX, !issecondary, damagefalloff_mindist);
 	mymaxdist = WEP_CVAR_BOTH(WEP_OVERKILL_NEX, !issecondary, damagefalloff_maxdist);
+	mydamagefalloff_mode = WEP_CVAR_BOTH(WEP_OVERKILL_NEX, !issecondary, damagefalloff_mode);
 	myhalflife = WEP_CVAR_BOTH(WEP_OVERKILL_NEX, !issecondary, damagefalloff_halflife);
 	myforcehalflife = WEP_CVAR_BOTH(WEP_OVERKILL_NEX, !issecondary, damagefalloff_forcehalflife);
 	myammo = WEP_CVAR_BOTH(WEP_OVERKILL_NEX, !issecondary, ammo);
@@ -91,7 +93,7 @@ void W_OverkillNex_Attack(Weapon thiswep, entity actor, .entity weaponentity, fl
 
 	yoda = 0;
 	impressive_hits = 0;
-	FireRailgunBullet(actor, weaponentity, w_shotorg, w_shotorg + w_shotdir * max_shot_distance, mydmg, true, myforce, mymindist, mymaxdist, myhalflife, myforcehalflife, thiswep.m_id);
+	FireRailgunBullet(actor, weaponentity, w_shotorg, w_shotorg + w_shotdir * max_shot_distance, mydmg, true, myforce, mymindist, mymaxdist, myhalflife, myforcehalflife, thiswep.m_id, mydamagefalloff_mode);
 
 	if(yoda && flying)
 		Send_Notification(NOTIF_ONE, actor, MSG_ANNCE, ANNCE_ACHIEVEMENT_YODA);

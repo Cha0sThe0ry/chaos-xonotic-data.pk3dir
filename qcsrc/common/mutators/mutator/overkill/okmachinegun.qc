@@ -40,7 +40,8 @@ void W_OverkillMachineGun_Attack_Auto(Weapon thiswep, entity actor, .entity weap
 	                   0,
 	                   WEP_CVAR_PRI(WEP_OVERKILL_MACHINEGUN, force),
 	                   WEP_CVAR(WEP_OVERKILL_MACHINEGUN, damagefalloff_forcehalflife),
-	                   WEP_OVERKILL_MACHINEGUN.m_id, EFFECT_RIFLE, true);
+	                   WEP_OVERKILL_MACHINEGUN.m_id, EFFECT_RIFLE, true,
+										 WEP_CVAR(WEP_MACHINEGUN, damagefalloff_mode));
 
 	actor.(weaponentity).misc_bulletcounter = actor.(weaponentity).misc_bulletcounter + 1;
 

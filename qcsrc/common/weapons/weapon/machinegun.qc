@@ -80,7 +80,8 @@ void W_MachineGun_Attack(Weapon thiswep, int deathtype, entity actor, .entity we
 		                   0,
 		                   WEP_CVAR(WEP_MACHINEGUN, first_force),
 		                   WEP_CVAR(WEP_MACHINEGUN, damagefalloff_forcehalflife),
-		                   deathtype, EFFECT_BULLET, true);
+		                   deathtype, EFFECT_BULLET, true,
+											 WEP_CVAR(WEP_MACHINEGUN, damagefalloff_mode));
 	else
 		fireBullet_falloff(actor, weaponentity, w_shotorg, w_shotdir,
 		                   WEP_CVAR(WEP_MACHINEGUN, sustained_spread),
@@ -92,7 +93,8 @@ void W_MachineGun_Attack(Weapon thiswep, int deathtype, entity actor, .entity we
 		                   0,
 		                   WEP_CVAR(WEP_MACHINEGUN, sustained_force),
 		                   WEP_CVAR(WEP_MACHINEGUN, damagefalloff_forcehalflife),
-		                   deathtype, EFFECT_BULLET, true);
+		                   deathtype, EFFECT_BULLET, true,
+											 WEP_CVAR(WEP_MACHINEGUN, damagefalloff_mode));
 
 	W_MuzzleFlash(thiswep, actor, weaponentity, w_shotorg, w_shotdir);
 
@@ -182,7 +184,8 @@ void W_MachineGun_Attack_Auto(Weapon thiswep, entity actor, .entity weaponentity
 	                   0,
 	                   WEP_CVAR(WEP_MACHINEGUN, sustained_force),
 	                   WEP_CVAR(WEP_MACHINEGUN, damagefalloff_forcehalflife),
-	                   thiswep.m_id, EFFECT_BULLET, true);
+	                   thiswep.m_id, EFFECT_BULLET, true,
+										 WEP_CVAR(WEP_MACHINEGUN, damagefalloff_mode));
 
 	++actor.(weaponentity).misc_bulletcounter;
 
@@ -227,7 +230,8 @@ void W_MachineGun_Attack_Burst(Weapon thiswep, entity actor, .entity weaponentit
 	                   0,
 	                   WEP_CVAR(WEP_MACHINEGUN, sustained_force),
 	                   WEP_CVAR(WEP_MACHINEGUN, damagefalloff_forcehalflife),
-	                   thiswep.m_id, EFFECT_BULLET, true);
+	                   thiswep.m_id, EFFECT_BULLET, true,
+										 WEP_CVAR(WEP_MACHINEGUN, damagefalloff_mode));
 
 	W_MuzzleFlash(thiswep, actor, weaponentity, w_shotorg, w_shotdir);
 

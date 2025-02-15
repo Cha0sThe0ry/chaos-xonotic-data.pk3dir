@@ -60,7 +60,8 @@ METHOD(OverkillShotgun, wr_think, void(entity thiswep, entity actor, .entity wea
 			WEP_CVAR_PRI(WEP_OVERKILL_SHOTGUN, solidpenetration),
 			WEP_CVAR_PRI(WEP_OVERKILL_SHOTGUN, force),
 			WEP_CVAR_PRI(WEP_OVERKILL_SHOTGUN, damagefalloff_forcehalflife),
-			EFFECT_RIFLE_WEAK);
+			EFFECT_RIFLE_WEAK,
+			WEP_CVAR_PRI(WEP_OVERKILL_SHOTGUN, damagefalloff_mode));
 		weapon_thinkf(actor, weaponentity, WFRAME_FIRE1, WEP_CVAR_PRI(WEP_OVERKILL_SHOTGUN, animtime), w_ready);
 		return;
 	}

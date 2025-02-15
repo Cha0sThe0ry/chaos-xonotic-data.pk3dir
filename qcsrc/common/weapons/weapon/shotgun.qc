@@ -12,7 +12,7 @@ void W_Shotgun_Attack(Weapon thiswep, entity actor, .entity weaponentity,
                       float spread_pattern, float spread_pattern_scale,
                       float solidpenetration,
                       float force, float falloff_forcehalflife,
-                      entity bullet_trail_effect)
+                      entity bullet_trail_effect, int damagefalloff_mode)
 {
 	W_DecreaseAmmo(thiswep, actor, ammocount, weaponentity);
 
@@ -42,17 +42,18 @@ void W_Shotgun_Attack(Weapon thiswep, entity actor, .entity weaponentity,
 			                   0, solidpenetration, damage,
 			                   falloff_halflife, falloff_mindist, falloff_maxdist,
 			                   0, force, falloff_forcehalflife,
-			                   thiswep.m_id, bullet_trail_effect, false);
+			                   thiswep.m_id, bullet_trail_effect, false, damagefalloff_mode);
 		}
 	}
 	else
 		for(int sc = 0; sc < bullets; ++sc)
-			fireBullet_falloff(actor, weaponentity,
+			fireBullet_falloff(
+				actor, weaponentity,
 				w_shotorg, w_shotdir,
 				spread, solidpenetration, damage,
 				falloff_halflife, falloff_mindist, falloff_maxdist,
 				0, force, falloff_forcehalflife,
-				thiswep.m_id, bullet_trail_effect, false);
+				thiswep.m_id, bullet_trail_effect, false, damagefalloff_mode);
 
 	if(lag && bullets > 0)
 		antilag_restore_all(actor);
@@ -195,7 +196,8 @@ void W_Shotgun_Attack3_Frame2(Weapon thiswep, entity actor, .entity weaponentity
 	}
 
 	sound(actor, CH_WEAPON_SINGLE, SND_Null, VOL_BASE, ATTN_NORM); // kill previous sound
-	W_Shotgun_Attack(thiswep, actor, weaponentity, true,
+	W_Shotgun_Attack(
+		thiswep, actor, weaponentity, true,
 		WEP_CVAR_PRI(WEP_SHOTGUN, ammo),
 		WEP_CVAR_PRI(WEP_SHOTGUN, damage),
 		WEP_CVAR_PRI(WEP_SHOTGUN, damagefalloff_halflife),
@@ -208,7 +210,8 @@ void W_Shotgun_Attack3_Frame2(Weapon thiswep, entity actor, .entity weaponentity
 		WEP_CVAR_PRI(WEP_SHOTGUN, solidpenetration),
 		WEP_CVAR_PRI(WEP_SHOTGUN, force),
 		WEP_CVAR_PRI(WEP_SHOTGUN, damagefalloff_forcehalflife),
-		EFFECT_BULLET_WEAK); // actually is secondary, but we trick the last shot into playing full reload sound
+		EFFECT_BULLET_WEAK,
+		WEP_CVAR_PRI(WEP_SHOTGUN, damagefalloff_mode)); // actually is secondary, but we trick the last shot into playing full reload sound
 	weapon_thinkf(actor, weaponentity, WFRAME_FIRE1, WEP_CVAR_SEC(WEP_SHOTGUN, alt_animtime), w_ready);
 }
 void W_Shotgun_Attack3_Frame1(Weapon thiswep, entity actor, .entity weaponentity, int fire)
@@ -234,7 +237,8 @@ void W_Shotgun_Attack3_Frame1(Weapon thiswep, entity actor, .entity weaponentity
 		WEP_CVAR_PRI(WEP_SHOTGUN, solidpenetration),
 		WEP_CVAR_PRI(WEP_SHOTGUN, force),
 		WEP_CVAR_PRI(WEP_SHOTGUN, damagefalloff_forcehalflife),
-		EFFECT_BULLET_WEAK);
+    EFFECT_BULLET_WEAK,
+    WEP_CVAR_PRI(WEP_SHOTGUN, damagefalloff_mode));
 	weapon_thinkf(actor, weaponentity, WFRAME_FIRE1, WEP_CVAR_SEC(WEP_SHOTGUN, alt_animtime), W_Shotgun_Attack3_Frame2);
 }
 
@@ -281,7 +285,8 @@ METHOD(Shotgun, wr_think, void(entity thiswep, entity actor, .entity weaponentit
 						WEP_CVAR_PRI(WEP_SHOTGUN, solidpenetration),
 						WEP_CVAR_PRI(WEP_SHOTGUN, force),
 						WEP_CVAR_PRI(WEP_SHOTGUN, damagefalloff_forcehalflife),
-						EFFECT_BULLET_WEAK);
+						EFFECT_BULLET_WEAK,
+	          WEP_CVAR_PRI(WEP_SHOTGUN, damagefalloff_mode));
 					actor.(weaponentity).shotgun_primarytime = time + WEP_CVAR_PRI(WEP_SHOTGUN, refire) * W_WeaponRateFactor(actor);
 					weapon_thinkf(actor, weaponentity, WFRAME_FIRE1, WEP_CVAR_PRI(WEP_SHOTGUN, animtime), w_ready);
 					return;
@@ -307,7 +312,8 @@ METHOD(Shotgun, wr_think, void(entity thiswep, entity actor, .entity weaponentit
 						WEP_CVAR_PRI(WEP_SHOTGUN, solidpenetration),
 						WEP_CVAR_PRI(WEP_SHOTGUN, force),
 						WEP_CVAR_PRI(WEP_SHOTGUN, damagefalloff_forcehalflife),
-						EFFECT_BULLET_WEAK);
+					  EFFECT_BULLET_WEAK,
+						WEP_CVAR_PRI(WEP_SHOTGUN, damagefalloff_mode));
 					actor.(weaponentity).shotgun_primarytime = time + WEP_CVAR_SEC(WEP_SHOTGUN, alt_refire) * W_WeaponRateFactor(actor);
 					weapon_thinkf(actor, weaponentity, WFRAME_FIRE1, WEP_CVAR_SEC(WEP_SHOTGUN, alt_animtime), W_Shotgun_Attack3_Frame1);
 					return;
