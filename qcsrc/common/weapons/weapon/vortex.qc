@@ -119,7 +119,7 @@ void W_Vortex_Attack(Weapon thiswep, entity actor, .entity weaponentity, float i
 	mymindist = WEP_CVAR_BOTH(WEP_VORTEX, !issecondary, damagefalloff_mindist);
 	mymaxdist = WEP_CVAR_BOTH(WEP_VORTEX, !issecondary, damagefalloff_maxdist);
 	myhalflife = WEP_CVAR_BOTH(WEP_VORTEX, !issecondary, damagefalloff_halflife);
-	myhalflife = WEP_CVAR_BOTH(WEP_VORTEX, !issecondary, damagefalloff_mode);
+	damagefalloff_mode = WEP_CVAR_BOTH(WEP_VORTEX, !issecondary, damagefalloff_mode);
 	myforcehalflife = WEP_CVAR_BOTH(WEP_VORTEX, !issecondary, damagefalloff_forcehalflife);
 	myammo = WEP_CVAR_BOTH(WEP_VORTEX, !issecondary, ammo);
 
@@ -150,7 +150,7 @@ void W_Vortex_Attack(Weapon thiswep, entity actor, .entity weaponentity, float i
 
 	yoda = 0;
 	impressive_hits = 0;
-	FireRailgunBullet(actor, weaponentity, w_shotorg, w_shotorg + w_shotdir * max_shot_distance, mydmg, false, myforce, mymindist, mymaxdist, myhalflife, myforcehalflife, dtype, myhalflife);
+	FireRailgunBullet(actor, weaponentity, w_shotorg, w_shotorg + w_shotdir * max_shot_distance, mydmg, false, myforce, mymindist, mymaxdist, myhalflife, myforcehalflife, dtype, damagefalloff_mode);
 
 	if(yoda && flying)
 		Send_Notification(NOTIF_ONE, actor, MSG_ANNCE, ANNCE_ACHIEVEMENT_YODA);
