@@ -327,11 +327,10 @@ void FireRailgunBullet (entity this, .entity weaponentity, vector start, vector 
 
 		if (damagefalloff_mode == 1)
 		{
-			foff = LinearFalloff(mindist, maxdist, halflifedist, it.railgundistance);
-			if (forcehalflifedist > 0)
-			{
+			if (halflifedist)
+				foff = LinearFalloff(mindist, maxdist, halflifedist, it.railgundistance);
+			if (forcehalflifedist)
 				ffs = LinearFalloff(mindist, maxdist, forcehalflifedist, it.railgundistance);
-			}
 		}
 		else if (damagefalloff_mode == 2) {
 			foff = ExponentialFalloff(mindist, maxdist, halflifedist, it.railgundistance);
@@ -467,7 +466,7 @@ void fireBullet_falloff(entity this, .entity weaponentity, vector start, vector 
 				if (falloff_halflife)
 					dealt_damage *= LinearFalloff(falloff_mindist, falloff_maxdist, falloff_halflife,      dist);
 
-				if (falloff_forcehalflife > 0)
+				if (falloff_forcehalflife)
 					dealt_force  *= LinearFalloff(falloff_mindist, falloff_maxdist, falloff_forcehalflife, dist);
 			}
 			else if ((damagefalloff_mode == 2) && (falloff_halflife || falloff_forcehalflife))
