@@ -421,7 +421,7 @@ METHOD(MachineGun, wr_killmessage, Notification(entity thiswep))
 
 METHOD(MachineGun, wr_zoom, bool(entity thiswep, entity actor))
 {
-	return PHYS_INPUT_BUTTON_ATCK2(actor) && !WEP_CVAR(WEP_OVERKILL_NEX, secondary);
+	return PHYS_INPUT_BUTTON_ATCK2(actor) && (WEP_CVAR(WEP_MACHINEGUN, mode) == 3);
 }
 
 #endif
@@ -437,7 +437,7 @@ METHOD(MachineGun, wr_impacteffect, void(entity thiswep, entity actor))
 
 METHOD(MachineGun, wr_zoom, bool(entity thiswep, entity actor))
 {
-	if(button_zoom || zoomscript_caught || (WEP_CVAR(WEP_OVERKILL_NEX, mode) == 2 && button_attack2))
+	if(button_zoom || zoomscript_caught || (WEP_CVAR(WEP_MACHINEGUN, mode) == 3 && button_attack2))
 	{
 		return true;
 	}
@@ -450,7 +450,7 @@ METHOD(MachineGun, wr_zoom, bool(entity thiswep, entity actor))
 
 METHOD(MachineGun, wr_zoomdir, bool(entity thiswep))
 {
-    return button_attack2 && !WEP_CVAR(WEP_OVERKILL_NEX, secondary);
+	return button_attack2 && (WEP_CVAR(WEP_MACHINEGUN, mode) == 3 && button_attack2);
 }
 
 
