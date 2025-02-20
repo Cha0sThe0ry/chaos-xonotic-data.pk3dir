@@ -59,6 +59,7 @@ CLASS(Arc, Weapon)
 		P(class, prefix, beam_damage, float, NONE) \
 		P(class, prefix, beam_degreespersegment, float, NONE) \
 		P(class, prefix, beam_distancepersegment, float, NONE) \
+		P(class, prefix, beam_damagefalloff_mode, float, NONE) \
 		P(class, prefix, beam_falloff_halflifedist, float, NONE) \
 		P(class, prefix, beam_falloff_maxdist, float, NONE) \
 		P(class, prefix, beam_falloff_mindist, float, NONE) \

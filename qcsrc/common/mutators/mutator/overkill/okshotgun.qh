@@ -30,6 +30,7 @@ CLASS(OverkillShotgun, Weapon)
 		P(class, prefix, bot_range, float, PRI) \
 		P(class, prefix, bullets, float, PRI) \
 		P(class, prefix, damage, float, PRI) \
+		P(class, prefix, damagefalloff_mode, float, PRI) \
 		P(class, prefix, damagefalloff_forcehalflife, float, PRI) \
 		P(class, prefix, damagefalloff_halflife, float, PRI) \
 		P(class, prefix, damagefalloff_maxdist, float, PRI) \

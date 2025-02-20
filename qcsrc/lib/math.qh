@@ -248,6 +248,14 @@ float ExponentialFalloff(float mindist, float maxdist, float halflifedist, float
 	else return 1;
 }
 
+ERASEABLE
+float LinearFalloff(float mindist, float maxdist, float maxdistdmgpercentage, float d)
+{
+    float clampeddist = bound(mindist, d, maxdist);
+    float t = (clampeddist - mindist) / (maxdist - mindist);
+    return 1 - t * (1 - maxdistdmgpercentage);
+}
+
 #define power2of(e) (2 ** e)
 
 ERASEABLE
