@@ -324,7 +324,7 @@ METHOD(MachineGun, wr_think, void(entity thiswep, entity actor, .entity weaponen
 			W_MachineGun_Attack_Burst(thiswep, actor, weaponentity, fire);
 		}
 	}
-	else
+	else if (WEP_CVAR(WEP_MACHINEGUN, mode) == 2)
 	{
 
 		if(fire & 1)
@@ -341,6 +341,20 @@ METHOD(MachineGun, wr_think, void(entity thiswep, entity actor, .entity weaponen
 			actor.(weaponentity).misc_bulletcounter = 1;
 			W_MachineGun_Attack(thiswep, thiswep.m_id | HITTYPE_SECONDARY, actor, weaponentity); // sets attack_finished
 			weapon_thinkf(actor, weaponentity, WFRAME_FIRE2, WEP_CVAR(WEP_MACHINEGUN, first_refire), w_ready);
+		}
+	}
+	else if (WEP_CVAR(WEP_MACHINEGUN, mode) == 3)
+	{
+		if(fire & 1)
+			if(weapon_prepareattack(thiswep, actor, weaponentity, false, 0))
+			{
+				actor.(weaponentity).misc_bulletcounter = 1;
+				W_MachineGun_Attack(thiswep, thiswep.m_id, actor, weaponentity); // sets attack_finished
+				weapon_thinkf(actor, weaponentity, WFRAME_FIRE1, WEP_CVAR(WEP_MACHINEGUN, sustained_refire), W_MachineGun_Attack_Frame);
+			}
+		if(fire & 2)
+		{
+			; // Do nothing here
 		}
 	}
 }
@@ -405,6 +419,11 @@ METHOD(MachineGun, wr_killmessage, Notification(entity thiswep))
 		return WEAPON_MACHINEGUN_MURDER_SPRAY;
 }
 
+METHOD(MachineGun, wr_zoom, bool(entity thiswep, entity actor))
+{
+	return PHYS_INPUT_BUTTON_ATCK2(actor) && !WEP_CVAR(WEP_OVERKILL_NEX, secondary);
+}
+
 #endif
 #ifdef CSQC
 
@@ -415,5 +434,24 @@ METHOD(MachineGun, wr_impacteffect, void(entity thiswep, entity actor))
 	if(!w_issilent)
 		sound(actor, CH_SHOTS, SND_RIC_RANDOM(), VOL_BASE, ATTN_NORM);
 }
+
+METHOD(MachineGun, wr_zoom, bool(entity thiswep, entity actor))
+{
+	if(button_zoom || zoomscript_caught || (WEP_CVAR(WEP_OVERKILL_NEX, mode) == 2 && button_attack2))
+	{
+		return true;
+	}
+	else
+	{
+		// no weapon specific image for this weapon
+		return false;
+	}
+}
+
+METHOD(MachineGun, wr_zoomdir, bool(entity thiswep))
+{
+    return button_attack2 && !WEP_CVAR(WEP_OVERKILL_NEX, secondary);
+}
+
 
 #endif
