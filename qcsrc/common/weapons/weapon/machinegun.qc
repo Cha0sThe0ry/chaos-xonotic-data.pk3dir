@@ -345,10 +345,15 @@ METHOD(MachineGun, wr_think, void(entity thiswep, entity actor, .entity weaponen
 	}
 	else if (WEP_CVAR(WEP_MACHINEGUN, mode) == 3)
 	{
+		if(fire & 1)
 		{
-			actor.(weaponentity).misc_bulletcounter = 0;
-			W_MachineGun_Attack_Auto(thiswep, actor, weaponentity, fire);
+			if(weapon_prepareattack(thiswep, actor, weaponentity, false, 0))
+			{
+				actor.(weaponentity).misc_bulletcounter = 0;
+				W_MachineGun_Attack_Auto(thiswep, actor, weaponentity, fire);
+			}
 		}
+
 		if(fire & 2)
 		{
 			; // Do nothing here
