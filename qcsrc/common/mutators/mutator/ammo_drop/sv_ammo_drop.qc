@@ -10,6 +10,9 @@ float autocvar_g_ammo_drop_cell_ammo; ///< Cell ammo count
 void AmmoDrop_SpawnAmmo(string ammo_type, int count, vector position)
 {
 
+	if (count == 0) {
+		return; // If ammo count is not specified, don't drop ammo of that type
+	}
 	vector spread = '0 0 0';
 	spread.z = autocvar_g_ammo_drop_spread / 2;
 	spread += randomvec() * autocvar_g_ammo_drop_spread;
