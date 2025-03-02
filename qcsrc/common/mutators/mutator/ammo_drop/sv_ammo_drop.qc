@@ -39,8 +39,8 @@ MUTATOR_HOOKFUNCTION(ammo_drop, PlayerDies)
 	entity victim = M_ARGV(2, entity);
 	vector loot_position = victim.origin + '0 0 32';
 
-	AmmoDrop_SpawnAmmo("item_shells", autocvar_g_ammo_drop_shell_count, loot_position);
-	AmmoDrop_SpawnAmmo("item_bullets", autocvar_g_ammo_drop_bullet_count, loot_position);
-  AmmoDrop_SpawnAmmo("item_rockets", autocvar_g_ammo_drop_rocket_count, loot_position);
-	AmmoDrop_SpawnAmmo("item_cells", autocvar_g_ammo_drop_cell_count, loot_position);
+	AmmoDrop_SpawnAmmo("ammo_shells", autocvar_g_ammo_drop_shell_count, loot_position);
+	AmmoDrop_SpawnAmmo("ammo_bullets", autocvar_g_ammo_drop_bullet_count, loot_position);
+  AmmoDrop_SpawnAmmo("ammo_rockets", autocvar_g_ammo_drop_rocket_count, loot_position);
+	AmmoDrop_SpawnAmmo("ammo_cells", autocvar_g_ammo_drop_cell_count, loot_position);
 }
