@@ -2,10 +2,10 @@
 
 float autocvar_g_ammo_drop_spread; ///< ammo spread from the point of death
 float autocvar_g_ammo_drop_lifetime; ///< ammo drop's lifetime
-float autocvar_g_ammo_drop_shell_ammo; ///< Shell ammo count
-float autocvar_g_ammo_drop_bullet_ammo; ///< bullet ammo count
-float autocvar_g_ammo_drop_rocket_ammo; ///< Rocket ammo count
-float autocvar_g_ammo_drop_cell_ammo; ///< Cell ammo count
+float autocvar_g_ammo_drop_shell_count; ///< Shell ammo count
+float autocvar_g_ammo_drop_bullet_count; ///< bullet ammo count
+float autocvar_g_ammo_drop_rocket_count; ///< Rocket ammo count
+float autocvar_g_ammo_drop_cell_count; ///< Cell ammo count
 
 void AmmoDrop_SpawnAmmo(string ammo_type, int count, vector position)
 {
@@ -39,8 +39,8 @@ MUTATOR_HOOKFUNCTION(ammo_drop, PlayerDies)
 	entity victim = M_ARGV(2, entity);
 	vector loot_position = victim.origin + '0 0 32';
 
-	AmmoDrop_SpawnAmmo("item_shells", autocvar_g_ammo_drop_shell_ammo, loot_position);
-	AmmoDrop_SpawnAmmo("item_bullets", autocvar_g_ammo_drop_bullet_ammo, loot_position);
-  AmmoDrop_SpawnAmmo("item_rockets", autocvar_g_ammo_drop_rocket_ammo, loot_position);
-	AmmoDrop_SpawnAmmo("item_cells", autocvar_g_ammo_drop_cell_ammo, loot_position);
+	AmmoDrop_SpawnAmmo("item_shells", autocvar_g_ammo_drop_shell_count, loot_position);
+	AmmoDrop_SpawnAmmo("item_bullets", autocvar_g_ammo_drop_bullet_count, loot_position);
+  AmmoDrop_SpawnAmmo("item_rockets", autocvar_g_ammo_drop_rocket_count, loot_position);
+	AmmoDrop_SpawnAmmo("item_cells", autocvar_g_ammo_drop_cell_count, loot_position);
 }
