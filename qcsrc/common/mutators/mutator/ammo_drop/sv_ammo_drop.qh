@@ -2,7 +2,7 @@
 
 bool autocvar_g_ammo_drop;
 
-void AmmoDrop_SpawnAmmo(string ammo_type, int count, vector position);
+void AmmoDrop_SpawnAmmo(entity ammo_type, int count, vector position);
 
 REGISTER_MUTATOR(ammo_drop, (autocvar_g_ammo_drop));
 
