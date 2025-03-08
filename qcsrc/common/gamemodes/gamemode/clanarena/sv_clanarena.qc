@@ -11,6 +11,10 @@ float autocvar_g_ca_start_ammo_rockets = 160;
 float autocvar_g_ca_start_ammo_cells = 180;
 float autocvar_g_ca_start_ammo_fuel = 0;
 
+
+// Used to prevent filtering dropped items
+bool ammodrop_is_spawning = false;
+
 .float ca_damage_counter;
 .int prev_team;
 
@@ -385,11 +389,41 @@ void ca_LastPlayerForTeam_Notify(entity this)
 	}
 }
 
+void ca_SpawnAmmoOnDeath(entity ammo_type, int count, vector position)
+{
+
+	if (count == 0) {
+		return; // If ammo count is not specified, don't drop ammo of that type
+	}
+	vector spread = '0 0 0';
+	spread.z = autocvar_g_ca_ammodrop_spread / 2;
+	spread += randomvec() * autocvar_g_ca_ammodrop_spread;
+
+	ammodrop_is_spawning = true;
+	entity item = spawn();
+	item.itemdef = ammo_type;
+	item.origin = position;
+	item.velocity = spread;
+	item.lifetime = autocvar_g_ca_ammodrop_lifetime;
+
+	Item_Initialise(item);
+
+	ammodrop_is_spawning = false;
+}
+
 MUTATOR_HOOKFUNCTION(ca, PlayerDies)
 {
 	entity frag_target = M_ARGV(2, entity);
 
 	ca_LastPlayerForTeam_Notify(frag_target);
+
+	vector ammodrop_position = frag_target.origin + '0 0 32';
+
+	ca_SpawnAmmoOnDeath(ITEM_Shells, autocvar_g_ca_ammodrop_shell_count, ammodrop_position);
+	ca_SpawnAmmoOnDeath(ITEM_Bullets, autocvar_g_ca_ammodrop_bullet_count, ammodrop_position);
+  ca_SpawnAmmoOnDeath(ITEM_Rockets, autocvar_g_ca_ammodrop_rocket_count, ammodrop_position);
+	ca_SpawnAmmoOnDeath(ITEM_Cells, autocvar_g_ca_ammodrop_cell_count, ammodrop_position);
+
 	if (!allowed_to_spawn)
 	{
 		frag_target.respawn_flags = RESPAWN_SILENT;
@@ -488,9 +522,13 @@ MUTATOR_HOOKFUNCTION(ca, FilterItem)
 {
 	entity item = M_ARGV(0, entity);
 
+
 	if (autocvar_g_powerups <= 0)
-	if (item.itemdef.instanceOfPowerup)
-		return true;
+		if (item.itemdef.instanceOfPowerup)
+			return true;
+	if (autocvar_g_ca_ammodrop_on_death)
+		if (item.itemdef.instanceOfAmmo)
+			return false;
 
 	if (autocvar_g_pickup_items <= 0)
 		return true;
