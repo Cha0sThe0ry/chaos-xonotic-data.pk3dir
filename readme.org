@@ -1,0 +1,56 @@
+* Dev instructions
+
+** Creating a new branch
+
+You always want to create a new branch for any significant feature.  This also allows you to test for any issues.
+
+#+BEGIN_SRC bash
+  git checkout ct-dev
+  git checkout -b <new-branch> // Will create a new branch
+  git checkout <new-branch>  // Will switch to branch
+#+END_SRC
+
+- Use the naming convention as feature/<feature-name>
+  - example feature/ammo-drop
+
+** Tracking this upstream
+
+- When you create a branch, it's a local branch.  If you want it to be pushed to the main repository, you do the following/.
+
+#+BEGIN_SRC bash
+  git push -u origin <branch-name>
+#+END_SRC
+
+
+** Merging features into mainline
+
+#+BEGIN_SRC bash
+  // For merging changes from src-branch into target-branch
+  git checkout <target-branch>
+  git merge <source-branch>
+  // You may need to resolve changes here.  You will want to look up rebasing (or if fast-forwarding works, that's that).
+  git push // To push changes to main
+#+END_SRC
+
+
+** Compilation
+
+For any changes made here, you'll want to compile and check if there are any build time failures.  For this, you'll need gmqcc
+
+#+BEGIN_SRC bash
+  make QCC=<path-to-gmqcc-binary
+#+END_SRC
+
+example:
+#+BEGIN_SRC bash
+  make QCC=~/bin/gmqcc/gmqcc
+#+END_SRC
+
+
+To install gmqcc,
+
+#+BEGIN_SRC bash
+  git clone https://github.com/graphitemaster/gmqcc
+  cd gmqcc
+  make
+#+END_SRC
